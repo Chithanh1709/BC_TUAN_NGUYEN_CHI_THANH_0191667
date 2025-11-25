@@ -1,5 +1,7 @@
 package com.example.ogani.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,5 +29,6 @@ public class OrderDetail {
 
     @ManyToOne
     @JoinColumn(name = "order_id")
+    @JsonIgnore 
     private Order order;
 }

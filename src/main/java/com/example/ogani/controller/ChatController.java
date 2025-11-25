@@ -1,51 +1,80 @@
 package com.example.ogani.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody; // SỬA IMPORT NÀY
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.ogani.dtos.request.ChatAiRequest;
 import com.example.ogani.dtos.response.ChatAiResponse;
-import com.example.ogani.service.AIChatService;
+import com.example.ogani.dtos.response.ChatHistoryDTO;
+import com.example.ogani.service.GeminiChatService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/api/chat")
-@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping("/api/chatbot")
+@CrossOrigin(origins = "*", maxAge = 3600)
+@Tag(name = "Chatbot AI", description = "API chatbot với context awareness")
+@Slf4j
 public class ChatController {
-
+    
     @Autowired
-    private AIChatService aiChatService;
+    private GeminiChatService aiChatService;
 
-    @PostMapping
-    public ChatAiResponse chat(@RequestBody ChatAiRequest chatRequest) { // BÂY GIỜ SẼ HOẠT ĐỘNG
+    @PostMapping("/chat")
+    @Operation(summary = "Gửi tin nhắn đến chatbot AI")
+    public ResponseEntity<?> chat(@RequestBody ChatAiRequest request) {
         try {
-            System.out.println("🎯 Received ChatAiRequest object: " + chatRequest);
-            System.out.println("📝 Message value: '" + chatRequest.getMessage() + "'");
-
-            // Validate
-            if (chatRequest.getMessage() == null) {
-                System.out.println("❌ Message is NULL");
-                return new ChatAiResponse("Lỗi: message là null");
+            if (request.getMessage() == null || request.getMessage().trim().isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("error", "Tin nhắn không được để trống"));
             }
 
-            String message = chatRequest.getMessage().trim();
-            if (message.isEmpty()) {
-                System.out.println("❌ Message is empty");
-                return new ChatAiResponse("Vui lòng nhập câu hỏi.");
-            }
+            log.info("Received message from userId={}: {}", request.getUserId(), request.getMessage());
 
-            System.out.println("✅ Processing message: '" + message + "'");
-            return aiChatService.chatWithAI(chatRequest);
+            ChatAiResponse response = aiChatService.chat(
+                request.getMessage(), 
+                request.getUserId(),
+                request.getConversationId()
+            );
+            
+            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
-            System.err.println("💥 Controller error: " + e.getMessage());
-            e.printStackTrace();
-            return new ChatAiResponse("Lỗi xử lý request: " + e.getMessage());
+            log.error("Error in chatbot: ", e);
+            return ResponseEntity.internalServerError()
+                    .body(Map.of("error", "Đã xảy ra lỗi: " + e.getMessage()));
+        }
+    }
+    
+    @GetMapping("/history/{userId}")
+    @Operation(summary = "Lấy lịch sử chat của user")
+    public ResponseEntity<?> getChatHistory(@PathVariable Long userId) {
+        try {
+            List<ChatHistoryDTO> history = aiChatService.getChatHistory(userId);
+            return ResponseEntity.ok(history);
+        } catch (Exception e) {
+            log.error("Error getting chat history: ", e);
+            return ResponseEntity.internalServerError()
+                    .body(Map.of("error", "Đã xảy ra lỗi: " + e.getMessage()));
+        }
+    }
+    
+    @DeleteMapping("/history/{userId}")
+    @Operation(summary = "Xóa lịch sử chat của user")
+    public ResponseEntity<?> clearChatHistory(@PathVariable Long userId) {
+        try {
+            aiChatService.clearChatHistory(userId);
+            return ResponseEntity.ok(Map.of("message", "Đã xóa lịch sử chat thành công"));
+        } catch (Exception e) {
+            log.error("Error clearing chat history: ", e);
+            return ResponseEntity.internalServerError()
+                    .body(Map.of("error", "Đã xảy ra lỗi: " + e.getMessage()));
         }
     }
 }

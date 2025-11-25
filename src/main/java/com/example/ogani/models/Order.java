@@ -1,12 +1,14 @@
 package com.example.ogani.models;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Data
 @AllArgsConstructor
@@ -55,9 +57,9 @@ public class Order {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "order")
-    @JsonBackReference
-    private Set<OrderDetail> orderdetails;
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+     @JsonIgnoreProperties("order") 
+    private List<OrderDetail> orderdetails;
 
     @Column(name = "pay_method" , nullable = false)
     private String payMethod;

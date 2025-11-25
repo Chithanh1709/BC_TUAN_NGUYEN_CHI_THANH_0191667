@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -108,6 +109,9 @@ public class OrderService {
                 .orElseThrow(() -> new NotFoundException("Not Found User With Username:" + username));
 
         List<Order> orders = orderRepository.getOrderByUser(user.getUid());
+         orders.forEach(order -> {
+            Hibernate.initialize(order.getOrderdetails());
+        });
         return orders;
     }
 

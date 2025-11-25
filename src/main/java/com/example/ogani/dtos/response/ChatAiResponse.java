@@ -1,19 +1,42 @@
 package com.example.ogani.dtos.response;
 
+import lombok.Data;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Data
 public class ChatAiResponse {
-    private String answer;
-
-    public ChatAiResponse() {}
-
-    public ChatAiResponse(String answer) {
-        this.answer = answer;
+    private String reply;
+    private String conversationId;
+    private List<ProductInfo> relatedProducts;
+    private List<OrderInfo> relatedOrders;
+    
+    @Data
+    public static class ProductInfo {
+        private Long id;
+        private String name;
+        private String description;
+        private Long price;
+        private Integer quantity;
+        private String categoryName;
+        private String image;
     }
-
-    public String getAnswer() {
-        return answer;
+    
+    @Data
+    public static class OrderInfo {
+        private Long orderId;
+        private String orderStatus;
+        private Long totalPrice;
+        private LocalDateTime dateOrder;
+        private String payMethod;
+        private List<OrderDetailInfo> orderDetails;
     }
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
+    
+    @Data
+    public static class OrderDetailInfo {
+        private String productName;
+        private Integer quantity;
+        private Long price;
+        private Long subTotal;
     }
 }
