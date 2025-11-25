@@ -1,13 +1,15 @@
 package com.example.ogani.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 @Configuration
+@PropertySource("classpath:application.properties")
 public class GeminiConfig {
-    @Value("${gemini.api.key:AIzaSyC-xB8moNVKb1x8I6B9VimZc5J5OW_sEbs}")
+    @Value("${gemini.api.key}")
     private String apiKey;
     
-    @Value("${gemini.api.url:https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent}")
+    @Value("${gemini.api.url}")
     private String apiUrl;
     
     public String getApiKey() {

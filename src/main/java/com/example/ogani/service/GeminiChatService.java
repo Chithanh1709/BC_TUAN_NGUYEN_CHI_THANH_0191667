@@ -501,7 +501,10 @@ public class GeminiChatService {
     }
 
     private String callGeminiAPI(String prompt) throws IOException {
+        // URL đã bao gồm API key
         String url = geminiConfig.getApiUrl() + "?key=" + geminiConfig.getApiKey();
+        
+        log.debug("Calling Gemini API: {}", geminiConfig.getApiUrl());
 
         JsonObject requestBody = new JsonObject();
         JsonArray contents = new JsonArray();
@@ -514,12 +517,15 @@ public class GeminiChatService {
         contents.add(content);
         requestBody.add("contents", contents);
 
+        // Generation config
         JsonObject generationConfig = new JsonObject();
         generationConfig.addProperty("maxOutputTokens", 600);
         generationConfig.addProperty("temperature", 0.7);
         generationConfig.addProperty("topP", 0.9);
         generationConfig.addProperty("topK", 40);
         requestBody.add("generationConfig", generationConfig);
+
+        log.debug("Request body: {}", requestBody.toString());
 
         RequestBody body = RequestBody.create(
                 requestBody.toString(),
@@ -528,21 +534,32 @@ public class GeminiChatService {
         Request request = new Request.Builder()
                 .url(url)
                 .post(body)
+                .addHeader("Content-Type", "application/json")
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
+            String responseBody = response.body() != null ? response.body().string() : "";
+            
             if (!response.isSuccessful()) {
-                String errorBody = response.body() != null ? response.body().string() : "Unknown error";
-                log.error("Gemini API error: {}", errorBody);
+                log.error("Gemini API error [{}]: {}", response.code(), responseBody);
                 
-                if (response.code() == 429) {
-                    throw new IOException("API quota exceeded");
+                if (response.code() == 404) {
+                    throw new IOException("Gemini API endpoint not found. Please check the URL configuration.");
                 }
                 
-                throw new IOException("Gemini API failed: " + response.code());
+                if (response.code() == 429) {
+                    throw new IOException("API quota exceeded. Please try again later.");
+                }
+                
+                if (response.code() == 401) {
+                    throw new IOException("Invalid API key. Please check your configuration.");
+                }
+                
+                throw new IOException("Gemini API failed: " + response.code() + " - " + responseBody);
             }
 
-            String responseBody = response.body().string();
+            log.debug("Response body: {}", responseBody);
+            
             JsonObject jsonResponse = gson.fromJson(responseBody, JsonObject.class);
 
             return jsonResponse
@@ -552,6 +569,9 @@ public class GeminiChatService {
                     .getAsJsonArray("parts")
                     .get(0).getAsJsonObject()
                     .get("text").getAsString();
+        } catch (Exception e) {
+            log.error("Error calling Gemini API: ", e);
+            throw e;
         }
     }
 
