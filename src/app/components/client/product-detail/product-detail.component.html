@@ -1,0 +1,163 @@
+<p-toast></p-toast>
+
+<section class="breadcrumb-section set-bg" [ngStyle]="{backgroundImage:'url(assets/image/breadcrumb.jpg'}">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="breadcrumb__text">
+                    <h2>Thông tin sản phẩm</h2>
+                    <div class="breadcrumb__option">
+                        <a routerLink="/">Trang chủ</a>
+                        <span>Thông tin sản phẩm</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="product-details spad" *ngIf="product != null">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-6">
+                <div class="product__details__pic">
+                    <div class="product__details__pic__item">
+                        <img class="product__details__pic__item--large"
+                            src="{{'data:image/jpg;base64,' + product.images[0].data}}" alt="{{product.name}}">
+                    </div>
+                    <div class="product__details__pic__slider">
+                        <img src="{{'data:image/jpg;base64,' + image.data}}" alt="" *ngFor="let image of product.images"
+                            class="col-3">
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6">
+                <div class="product__details__text">
+                    <h3>{{product.name}}</h3>
+                    <div class="product__details__rating">
+                        <!-- Hiển thị rating trung bình -->
+                        <fa-icon [icon]="starType === 'full' ? star : starType === 'half' ? star_half : star_empty" 
+                                 *ngFor="let starType of getStars(averageRating)"
+                                 [class]="starType === 'full' || starType === 'half' ? 'text-warning' : 'text-muted'"></fa-icon>
+                        <span>({{totalReviews}} đánh giá)</span>
+                    </div>
+                    <div class="product__details__price">{{product.price | currency:'VND':'symbol':'1.0-0':'vi'}}</div>
+                    <span style="font-weight: bold;">Mô tả sản phẩm: </span>
+                    <p>
+                        <span>{{product.description}}</span>
+                    </p>
+
+                    <div class="product__details__quantity">
+                        <div class="quantity">
+                            <div class="pro-qty">
+                                <span class="dec qtybtn" (click)="subtractQuantity()">-</span>
+                                <input type="text" [(ngModel)]="quantity">
+                                <span class="inc qtybtn" (click)="plusQuantity()">+</span>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="javascript:void(0)" class="primary-btn" (click)="addCart(product)">THÊM VÀO GIỎ HÀNG</a>
+                    <ul>
+                        <li><b>Số lượng : </b> <span>{{product.quantity}} </span> <span>{{product.unit}}</span></li>
+                        <li><b>Vận chuyển</b> <span>Giao hàng trong 01 ngày. <samp>Nhận hàng miễn phí hôm nay</samp></span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <p-tabView>
+                    <p-tabPanel header="Mô tả sản phẩm">
+                        <div class="tab-pane">
+                            <div class="product__details__tab__desc">
+                                <h4>Chi tiết sản phẩm</h4>
+                                <p>{{product.content}}</p>
+                            </div>
+                        </div>
+                    </p-tabPanel>
+                    <p-tabPanel header="Đánh giá">
+                        <div class="tab-pane">
+                            <div class="product__details__tab__desc">
+                                <h6>Đánh giá sản phẩm ({{totalReviews}} đánh giá)</h6>
+                                
+                                <!-- Hiển thị thống kê đánh giá -->
+                                <div class="rating-summary mb-4" *ngIf="totalReviews > 0">
+                                    <div class="average-rating">
+                                        <h3>{{averageRating.toFixed(1)}}</h3>
+                                        <div class="stars">
+                                            <fa-icon [icon]="starType === 'full' ? star : starType === 'half' ? star_half : star_empty" 
+                                                     *ngFor="let starType of getStars(averageRating)"
+                                                     [class]="starType === 'full' || starType === 'half' ? 'text-warning' : 'text-muted'"></fa-icon>
+                                        </div>
+                                        <p>{{totalReviews}} đánh giá</p>
+                                    </div>
+                                </div>
+
+                                <!-- Danh sách reviews -->
+                                <div class="reviews-list">
+                                    <div class="review-item mb-4 p-3 border rounded" *ngFor="let review of listReviews">
+                                        <div class="review-header d-flex justify-content-between align-items-center">
+                                            <div class="reviewer-info">
+                                                <strong>{{review.reviewerName || 'Ẩn danh'}}</strong>
+                                                <div class="review-rating">
+                                                    <fa-icon [icon]="starType === 'full' ? star : starType === 'half' ? star_half : star_empty" 
+                                                             *ngFor="let starType of getStars(review.reviewRating)"
+                                                             [class]="starType === 'full' || starType === 'half' ? 'text-warning' : 'text-muted'"></fa-icon>
+                                                    <span class="ms-2">{{review.reviewRating}}/5</span>
+                                                </div>
+                                            </div>
+                                            <span class="review-date text-muted">
+                                                {{review.reviewDate | date:'dd/MM/yyyy HH:mm'}}
+                                            </span>
+                                        </div>
+                                        <div class="review-content mt-2">
+                                            <p class="mb-1" *ngIf="review.reviewComment"><strong>Nhận xét:</strong></p>
+                                            <p>{{review.reviewComment}}</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Hiển thị khi không có review -->
+                                    <div class="no-reviews text-center p-4" *ngIf="listReviews.length === 0">
+                                        <p class="text-muted">Chưa có đánh giá nào cho sản phẩm này.</p>
+                                        <p class="text-muted small">Hãy là người đầu tiên đánh giá sản phẩm này!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </p-tabPanel>
+                </p-tabView>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="related-product">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="section-title related__product__title">
+                    <h2>Sản phẩm liên quan</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-4 col-sm-6" *ngFor="let product of listRelatedProduct">
+                <div class="featured__item">
+                    <div class="featured__item__pic set-bg"
+                        [ngStyle]="{'background-image': 'url(data:image/jpeg;base64,'+ product.images[0].data+')'}">
+                        <ul class="featured__item__pic__hover">
+                            <li><a href="javascript:void(0)" (click)="addToWishList(product)"><fa-icon
+                                        [icon]="heart"></fa-icon></a></li>
+                            <li><a href="javascript:void(0)" routerLink="/product/{{product.id}}"><fa-icon
+                                        [icon]="retweet"></fa-icon></a></li>
+                            <li><a href="javascript:void(0)" (click)="addToCart(product)"><fa-icon
+                                        [icon]="bag"></fa-icon></a></li>
+                        </ul>
+                    </div>
+                    <div class="featured__item__text">
+                        <h6><a href="javascript:void(0)">{{product.name}}</a></h6>
+                        <h5>{{product.price | currency:'VND':'symbol':'1.0-0':'vi'}}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

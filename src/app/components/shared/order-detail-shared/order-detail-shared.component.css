@@ -1,0 +1,584 @@
+.order-detail-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.loading, .not-found {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #eee;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.admin-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+  font-weight: 500;
+}
+
+.btn-back {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-print {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-confirm {
+  background-color: #2196f3;
+  color: white;
+}
+
+.btn-ship {
+  background-color: #ff9800;
+  color: white;
+}
+
+.btn-complete {
+  background-color: #4caf50;
+  color: white;
+}
+
+.btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.status-section {
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.status-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.status-pending { background-color: #ffeb3b; color: #333; }
+.status-paid { background-color: #2196f3; color: white; }
+.status-shipping { background-color: #ff9800; color: white; }
+.status-completed { background-color: #4caf50; color: white; }
+.status-confirmed { background-color: #9c27b0; color: white; }
+.status-cancelled { background-color: #f44336; color: white; }
+.status-unknown { background-color: #9e9e9e; color: white; }
+
+.detail-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .detail-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+.info-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+.info-card h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.payment-date {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.payment-date.paid {
+  background-color: #e8f5e8;
+  color: #2e7d32;
+}
+
+.payment-date.not-paid {
+  background-color: #fff3e0;
+  color: #ef6c00;
+}
+
+.total-amount {
+  font-size: 18px;
+  font-weight: bold;
+  color: #e74c3c;
+}
+
+.order-items {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.order-item {
+  padding: 15px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background-color: #fafafa;
+}
+
+.item-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.item-main {
+  flex: 1;
+}
+
+.item-main h4 {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-size: 16px;
+}
+
+.item-details {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.item-price, .item-quantity, .item-id {
+  margin: 4px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.item-total {
+  font-weight: bold;
+  color: #e74c3c;
+  font-size: 16px;
+  min-width: 100px;
+  text-align: right;
+}
+
+.no-items {
+  text-align: center;
+  color: #666;
+  padding: 20px;
+}
+
+.notes-content {
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border-left: 4px solid #007bff;
+}
+
+.order-summary {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.summary-row:last-child {
+  border-bottom: none;
+}
+
+.summary-row.total {
+  font-size: 18px;
+  color: #e74c3c;
+  border-top: 2px solid #eee;
+  margin-top: 10px;
+  padding-top: 15px;
+}
+
+.no-action-text {
+  color: #666;
+  font-style: italic;
+  padding: 8px 12px;
+}
+
+/* Print Styles */
+@media print {
+  .btn-back, .btn-print, .admin-actions {
+    display: none;
+  }
+  
+  .order-detail-container {
+    padding: 0;
+  }
+  
+  .info-card {
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+}
+/* Styles cho phần đánh giá */
+.rating-status {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+
+.reviewed, .not-reviewed {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.review-badge {
+  background-color: #e8f5e8;
+  color: #2e7d32;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.review-rating {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.stars {
+  color: #ffc107;
+}
+
+.stars .filled {
+  color: #ffc107;
+}
+
+.stars span:not(.filled) {
+  color: #e0e0e0;
+}
+
+.btn-review {
+  background-color: #ff9800;
+  color: white;
+  font-size: 12px;
+  padding: 6px 12px;
+}
+
+.btn-view-review {
+  background-color: #2196f3;
+  color: white;
+  font-size: 12px;
+  padding: 6px 12px;
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #333;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.modal-footer {
+  padding: 20px;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.product-info {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.product-info h4 {
+  margin: 0 0 5px 0;
+  color: #333;
+}
+
+.rating-section {
+  margin-bottom: 20px;
+}
+
+.star-rating {
+  display: flex;
+  gap: 5px;
+  margin: 10px 0;
+}
+
+.star-rating:not(.static) .star {
+  cursor: pointer;
+  font-size: 24px;
+  color: #e0e0e0;
+  transition: color 0.2s;
+}
+
+.star-rating:not(.static) .star:hover,
+.star-rating:not(.static) .star.active {
+  color: #ffc107;
+}
+
+.star-rating.static .star {
+  font-size: 20px;
+}
+
+.rating-text {
+  color: #666;
+  font-style: italic;
+}
+
+.review-section {
+  margin-bottom: 15px;
+}
+
+.review-section label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.review-textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.review-content {
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  border-left: 4px solid #007bff;
+}
+
+.review-date {
+  color: #666;
+  font-size: 14px;
+  text-align: right;
+}
+
+.btn-cancel {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-submit {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .reviewed, .not-reviewed {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .modal-content {
+    width: 95%;
+    margin: 20px;
+  }
+}
+/* Thêm vào CSS hiện có */
+
+.reviewer-info {
+  margin: 8px 0;
+  padding: 8px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  border-left: 3px solid #007bff;
+}
+
+.reviewer-info small {
+  color: #666;
+}
+
+.reviewer-info strong {
+  color: #333;
+}
+
+/* Style cho trường hợp chưa đăng nhập */
+.login-required {
+  color: #dc3545;
+  font-size: 14px;
+  margin-top: 5px;
+}
+/* Đảm bảo các nút hiển thị rõ ràng */
+.btn-review {
+  background-color: #ff9800;
+  color: white;
+  font-size: 12px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-view-review {
+  background-color: #2196f3;
+  color: white;
+  font-size: 12px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-review:hover {
+  background-color: #f57c00;
+}
+
+.btn-view-review:hover {
+  background-color: #1976d2;
+}
+
+.rating-status {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+
+.reviewed, .not-reviewed {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}

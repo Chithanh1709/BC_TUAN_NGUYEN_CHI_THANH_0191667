@@ -1,0 +1,94 @@
+<!-- revenue.component.html -->
+<div class="container-fluid">
+
+  <!-- Page Heading -->
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">📊 Báo cáo & Thống kê Doanh thu</h1>
+  </div>
+
+  <!-- Doanh thu theo thời gian -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">Doanh thu theo thời gian</h6>
+    </div>
+    <div class="card-body">
+      <div class="form-group row mb-3">
+        <label class="col-sm-2 col-form-label font-weight-bold">Chọn khoảng thời gian:</label>
+        <div class="col-sm-4">
+            <select 
+            class="form-control" 
+            [(ngModel)]="selectedPeriod" 
+            (ngModelChange)="onPeriodChange()">
+            <option value="weekly">Theo tuần</option>
+            <option value="monthly">Theo tháng</option>
+            <option value="quarterly">Theo quý</option>
+            <option value="yearly">Theo năm</option>
+            </select>
+        </div>
+        <div class="col-sm-3">
+          <button 
+            class="btn btn-success btn-icon-split" 
+            (click)="exportToExcel()"
+            [disabled]="isExporting">
+            <span class="icon text-white-50">
+              <i class="fas fa-file-excel"></i>
+            </span>
+            <span class="text">
+              {{ isExporting ? 'Đang xuất...' : 'Xuất báo cáo Excel' }}
+            </span>
+          </button>
+        </div>
+      </div>
+
+        <div style="height: 300px; position: relative;">
+        <canvas
+            baseChart
+            [data]="revenueChartData"
+            [options]="revenueChartOptions"
+            type="bar"
+            style="display: block; height: 100%; width: 100%;">
+        </canvas>
+        </div>
+    </div>
+  </div>
+
+  <!-- Top sản phẩm -->
+  <div class="row">
+    <!-- Top theo doanh thu -->
+    <div class="col-xl-6 col-lg-6">
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">🔥 Top 10 sản phẩm (theo doanh thu)</h6>
+        </div>
+        <div class="card-body">
+          <canvas
+            baseChart
+            [data]="topRevenueChartData"
+            [options]="topRevenueChartOptions"
+            [type]="'bar'"
+            style="height: 400px; width: 100%;">
+          </canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top theo số lượng -->
+    <div class="col-xl-6 col-lg-6">
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">🛒 Top 10 sản phẩm (theo số lượng)</h6>
+        </div>
+        <div class="card-body">
+          <canvas
+            baseChart
+            [data]="topQuantityChartData"
+            [options]="topQuantityChartOptions"
+            [type]="'bar'"
+            style="height: 400px; width: 100%;">
+          </canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

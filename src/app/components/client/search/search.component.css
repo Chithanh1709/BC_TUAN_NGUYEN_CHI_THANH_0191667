@@ -1,0 +1,251 @@
+.price-input{
+    font-size: 16px;
+    color: #dd2222;
+    font-weight: 700;
+    border: none;
+    display: inline-block;
+}
+
+
+:host ::ng-deep .p-slider .p-slider-range, :host ::ng-deep  .p-slider .p-slider-handle {
+    background-color: #dd2222;
+    border-color: #dd2222;
+}
+
+:host ::ng-deep .p-dataview.p-dataview-list .p-dataview-content > .p-grid > div{
+    border: none;
+}
+/* Product Item Card Styles */
+.featured__item {
+  border: 2px solid #f0f0f0;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 30px;
+  background: #ffffff;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.featured__item:hover {
+  border-color: #7fad39;
+  box-shadow: 0 8px 20px rgba(127, 173, 57, 0.15);
+  transform: translateY(-5px);
+}
+
+.featured__item__pic {
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 15px;
+  position: relative;
+  background-size: cover !important;
+  background-position: center !important;
+  height: 250px;
+}
+
+.featured__item__text {
+  padding: 10px 5px;
+  text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.featured__item__text h6 {
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #252525;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.featured__item__text h6 a {
+  color: #252525;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.featured__item__text h6 a:hover {
+  color: #7fad39;
+}
+
+.featured__item__text h5 {
+  color: #7fad39;
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+/* Hover icons */
+.featured__item__pic__hover {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: all 0.3s ease;
+  display: flex;
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.featured__item:hover .featured__item__pic__hover {
+  opacity: 1;
+}
+
+.featured__item__pic__hover li {
+  display: inline-block;
+}
+
+.featured__item__pic__hover li a {
+  width: 45px;
+  height: 45px;
+  background: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #252525;
+  transition: all 0.3s;
+  text-decoration: none;
+}
+
+.featured__item__pic__hover li a:hover {
+  background: #7fad39;
+  color: #ffffff;
+  transform: scale(1.1);
+}
+
+/* Sidebar Styles */
+.sidebar__item {
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #ffffff;
+  border: 2px solid #f0f0f0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar__item h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #252525;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #7fad39;
+}
+
+.sidebar__item ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar__item ul li {
+  margin-bottom: 10px;
+}
+
+.sidebar__item ul li a {
+  color: #666;
+  text-decoration: none;
+  transition: all 0.3s;
+  display: block;
+  padding: 8px 0;
+}
+
+.sidebar__item ul li a:hover {
+  color: #7fad39;
+  padding-left: 10px;
+}
+
+/* Latest Product Item */
+.latest-product__item {
+  display: flex;
+  gap: 15px;
+  padding: 12px;
+  border-radius: 8px;
+  transition: all 0.3s;
+  text-decoration: none;
+  margin-bottom: 15px;
+}
+
+.latest-product__item:hover {
+  background: #f8f9fa;
+  transform: translateX(5px);
+}
+
+.latest-product__item__pic {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.latest-product__item__pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.latest-product__item__text h6 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #252525;
+  margin-bottom: 5px;
+}
+
+.latest-product__item__text span {
+  color: #7fad39;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+/* Price Slider */
+.price-input {
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 600;
+  color: #7fad39;
+}
+
+/* Custom Styles */
+:host ::ng-deep .p-slider .p-slider-range, :host ::ng-deep  .p-slider .p-slider-handle {
+    background-color: #dd2222;
+    border-color: #dd2222;
+}
+
+:host ::ng-deep .p-dataview.p-dataview-list .p-dataview-content > .p-grid > div{
+    border: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .featured__item {
+    margin-bottom: 20px;
+  }
+
+  .featured__item__pic {
+    height: 200px;
+  }
+
+  .featured__item__text h6 {
+    font-size: 0.9rem;
+    min-height: 35px;
+  }
+
+  .featured__item__text h5 {
+    font-size: 1.1rem;
+  }
+}
+

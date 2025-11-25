@@ -1,0 +1,135 @@
+/* Featured Item Card Styles */
+.featured__item {
+  border: 2px solid #f0f0f0;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 30px;
+  background: #ffffff;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.featured__item:hover {
+  border-color: #7fad39;
+  box-shadow: 0 8px 20px rgba(127, 173, 57, 0.15);
+  transform: translateY(-5px);
+}
+
+.featured__item__pic {
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.featured__item__text {
+  padding: 10px 5px;
+  text-align: center;
+}
+
+.featured__item__text h6 {
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #252525;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.featured__item__text h6 a {
+  color: #252525;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.featured__item__text h6 a:hover {
+  color: #7fad39;
+}
+
+.featured__item__text h5 {
+  color: #7fad39;
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+/* Hover icons */
+.featured__item__pic__hover {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.featured__item:hover .featured__item__pic__hover {
+  opacity: 1;
+}
+
+.featured__item__pic__hover li {
+  display: inline-block;
+  margin: 0 5px;
+}
+
+.featured__item__pic__hover li a {
+  width: 45px;
+  height: 45px;
+  background: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #252525;
+  transition: all 0.3s;
+}
+
+.featured__item__pic__hover li a:hover {
+  background: #7fad39;
+  color: #ffffff;
+}
+
+/* Section spacing */
+.featured.spad {
+  padding: 80px 0;
+}
+
+.section-title {
+  margin-bottom: 50px;
+}
+
+.section-title h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #252525;
+  position: relative;
+  padding-bottom: 15px;
+}
+
+.section-title h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 80px;
+  height: 3px;
+  background: #7fad39;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .featured__item {
+    margin-bottom: 20px;
+  }
+
+  .featured__item__text h6 {
+    font-size: 0.9rem;
+    min-height: 35px;
+  }
+
+  .featured__item__text h5 {
+    font-size: 1.1rem;
+  }
+}

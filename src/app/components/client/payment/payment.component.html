@@ -1,0 +1,164 @@
+<!-- payment.component.html -->
+<div class="payment-page">
+  <div class="payment-container">
+    <div class="payment-card">
+      <!-- Header -->
+      <div class="payment-header">
+        <div class="logo-section">
+          <div class="vnpay-logo">
+            <span class="logo-text">VNPAY</span>
+          </div>
+          <h1 class="payment-title">Xác Nhận Thanh Toán</h1>
+        </div>
+        <p class="payment-subtitle">Vui lòng kiểm tra thông tin thanh toán trước khi xác nhận</p>
+      </div>
+
+      <!-- Progress Steps -->
+      <div class="progress-steps">
+        <div class="step completed">
+          <span class="step-number">✓</span>
+          <span class="step-text">Đặt hàng</span>
+        </div>
+        <div class="step active">
+          <span class="step-number">2</span>
+          <span class="step-text">Thanh toán</span>
+        </div>
+        <div class="step">
+          <span class="step-number">3</span>
+          <span class="step-text">Hoàn tất</span>
+        </div>
+      </div>
+
+      <!-- Payment Information -->
+      <div class="payment-info-section">
+        <div class="info-card">
+          <h3 class="info-title">Thông tin thanh toán</h3>
+          
+          <div class="info-row">
+            <span class="info-label">Mã đơn hàng:</span>
+            <span class="info-value code">{{ paymentData.orderCode }}</span>
+          </div>
+        </div>
+
+        <!-- Payment Summary -->
+        <div class="payment-summary">
+          <div class="summary-header">
+            <h3>Tổng thanh toán</h3>
+          </div>
+          <div class="summary-content">
+            <div class="summary-row">
+              <span class="summary-label">Số tiền:</span>
+              <span class="summary-amount">{{ formatAmount(paymentData.amount) }} VND</span>
+            </div>
+            
+            <div class="summary-row">
+              <span class="summary-label">Phí giao dịch:</span>
+              <span class="summary-value free">0 VND</span>
+            </div>
+            
+            <div class="summary-row discount">
+              <span class="summary-label">Giảm giá:</span>
+              <span class="summary-value free">0 VND</span>
+            </div>
+            
+            <div class="summary-divider"></div>
+            
+            <div class="summary-row total">
+              <span class="summary-label">Tổng cộng:</span>
+              <span class="summary-total">
+                {{ formatAmount(paymentData.amount) }} VND
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Method -->
+        <div class="payment-method">
+          <div class="method-header">
+            <h3>Phương thức thanh toán</h3>
+          </div>
+          <div class="method-content">
+            <div class="method-logo">
+              <div class="vnpay-method-logo">
+                <span class="method-logo-text">VNPAY</span>
+              </div>
+            </div>
+            <div class="method-info">
+              <h4>Thanh toán qua VNPAY</h4>
+              <p>Hỗ trợ đa dạng ngân hàng và ví điện tử</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security & Actions -->
+      <div class="action-section">
+        <div class="security-info">
+          <div class="security-icon">🔒</div>
+          <div class="security-text">
+            <strong>Bảo mật tuyệt đối</strong>
+            <span>Thông tin của bạn được mã hóa và bảo vệ an toàn bởi VNPAY</span>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button
+            type="button"
+            class="btn-back"
+            (click)="backToCheckout()"
+            [disabled]="isProcessing"
+          >
+            ← Quay lại
+          </button>
+          
+          <button
+            type="button"
+            class="btn-payment"
+            (click)="onSubmit()"
+            [disabled]="isProcessing || !isValid"
+            [class.loading]="isProcessing"
+          >
+            <span *ngIf="!isProcessing" class="btn-content">
+              <span class="btn-icon">→</span>
+              <span class="btn-text">Xác Nhận Thanh Toán</span>
+            </span>
+            <span *ngIf="isProcessing" class="btn-content">
+              <span class="btn-spinner"></span>
+              <span class="btn-text">Đang xử lý...</span>
+            </span>
+          </button>
+        </div>
+
+        <div class="payment-note">
+          <p>Bằng cách xác nhận, bạn đồng ý với <a href="#" class="link">Điều khoản sử dụng</a> 
+          và <a href="#" class="link">Chính sách bảo mật</a> của chúng tôi</p>
+        </div>
+      </div>
+
+      <!-- Support Info -->
+      <div class="support-section">
+        <div class="support-item">
+          <div class="support-icon">📞</div>
+          <div class="support-content">
+            <strong>Hỗ trợ 24/7</strong>
+            <span>1900 1234</span>
+          </div>
+        </div>
+        <div class="support-item">
+          <div class="support-icon">🛡️</div>
+          <div class="support-content">
+            <strong>Bảo mật SSL</strong>
+            <span>Mã hóa 256-bit</span>
+          </div>
+        </div>
+        <div class="support-item">
+          <div class="support-icon">⏱️</div>
+          <div class="support-content">
+            <strong>Xử lý ngay</strong>
+            <span>Trong vòng 5 phút</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

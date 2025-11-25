@@ -1,0 +1,85 @@
+
+<p-toast></p-toast>
+
+
+<section class="breadcrumb-section set-bg" [ngStyle]="{backgroundImage:'url(assets/image/breadcrumb.jpg'}">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="breadcrumb__text">
+                    <h2>Giỏ hàng</h2>
+                    <div class="breadcrumb__option">
+                        <a routerLink="/" >Trang chủ</a>
+                        <span>Giỏ hàng</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="shoping-cart spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="shoping__cart__table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="shoping__product">Sản phẩm</th>
+                                <th>Giá</th>
+                                <th>Số lượng</th>
+                                <th>Tổng</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let product of cartService.items">
+                                <td class="shoping__cart__item">
+                                    <img src="{{'data:image/jpg;base64,' + product.images[0].data}}" alt="" width="100px">
+                                    <h5>{{product.name}}</h5>
+                                </td>
+                                <td class="shoping__cart__price">
+                                    <h5>{{ product.price | currency:'VND':'symbol':'1.0-0':'vi-VN' }}</h5>
+
+                                </td>
+                                <td class="shoping__cart__quantity">
+                                    <div class="quantity">
+                                        <div class="pro-qty">
+                                            <span class="dec qtybtn" (click)="subtractQuantity(product)">-</span>
+                                            <input type="text" [ngModel]="product.quantity" (change)="updateQuantity(product,$event)" min="1">
+                                            <span class="inc qtybtn" (click)="plusQuantity(product)">+</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="shoping__cart__total">
+                                    {{product.subTotal | currency:'VND':'symbol':'1.0-0':'vi-VN'}}
+                                </td>
+                                <td class="shoping__cart__item__close">
+                                    <button pButton pRipple type="button" icon="pi pi-times" class="p-button-rounded p-button-danger p-button-text" (click)="removeFromCart(product)"></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="shoping__cart__btns">
+                    <a href="javascript:void(0)" routerLink="/"class="primary-btn cart-btn">TIẾP TỤC MUA SẮM</a>
+                </div>
+            </div>
+                <div class="col-lg-6">
+                <div class="shoping__checkout">
+                    <h5>Tổng giỏ hàng</h5>
+                    <ul>
+                    <li>Giảm giá: <span>- 0%</span></li>
+                    <li>Tổng: <span>{{cartService.total | currency:'VND':'symbol':'1.0-0':'vi-VN'}}</span></li>
+                    </ul>
+                    <a style="cursor: pointer;" (click)="checkoutOrder()" class="primary-btn">TIẾP TỤC ĐẾN THANH TOÁN</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

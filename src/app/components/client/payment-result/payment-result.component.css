@@ -1,0 +1,244 @@
+/* src/app/payment-result/payment-result.component.css */
+.payment-result-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.result-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  padding: 40px;
+  width: 100%;
+  text-align: center;
+}
+
+.loading-state {
+  padding: 40px 0;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-state h2 {
+  color: #007bff;
+  margin-bottom: 10px;
+}
+
+.loading-state p {
+  color: #666;
+}
+
+.status-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: bold;
+}
+
+.status-icon.success {
+  background: #d4edda;
+  color: #155724;
+  border: 3px solid #c3e6cb;
+}
+
+.status-icon.failed {
+  background: #f8d7da;
+  color: #721c24;
+  border: 3px solid #f5c6cb;
+}
+
+.status-icon.error {
+  background: #fff3cd;
+  color: #856404;
+  border: 3px solid #ffeaa7;
+}
+
+.status-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.success-state .status-title {
+  color: #28a745;
+}
+
+.failed-state .status-title {
+  color: #dc3545;
+}
+
+.error-state .status-title {
+  color: #ffc107;
+}
+
+.status-message {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+.transaction-details {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 25px 0;
+  text-align: left;
+}
+
+.transaction-details h3 {
+  margin: 0 0 15px 0;
+  color: #495057;
+  font-size: 16px;
+  text-align: center;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.detail-label {
+  color: #6c757d;
+  font-weight: 500;
+  min-width: 120px;
+}
+
+.detail-value {
+  color: #212529;
+  font-weight: 600;
+  text-align: right;
+  flex: 1;
+  word-break: break-word;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-badge.success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.security-warning {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 6px;
+  padding: 15px;
+  margin: 20px 0;
+  text-align: left;
+}
+
+.security-warning p {
+  margin: 0;
+  color: #856404;
+  font-size: 14px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.btn-primary, .btn-secondary {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 140px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #0056b3, #004494);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #5a6268;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .payment-result-container {
+    padding: 10px;
+  }
+  
+  .result-card {
+    padding: 30px 20px;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .btn-primary, .btn-secondary {
+    width: 100%;
+  }
+  
+  .detail-row {
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .detail-label, .detail-value {
+    text-align: left;
+    width: 100%;
+  }
+}

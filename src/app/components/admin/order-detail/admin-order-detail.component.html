@@ -1,0 +1,9 @@
+<app-order-detail-shared
+  [order]="order"
+  [orderItems]="orderItems"
+  [isAdmin]="true"
+  [isLoading]="isLoading"
+  (goBack)="onGoBack()"
+  (printOrder)="onPrintOrder()"
+  (statusChange)="onStatusChange($event)">
+</app-order-detail-shared>

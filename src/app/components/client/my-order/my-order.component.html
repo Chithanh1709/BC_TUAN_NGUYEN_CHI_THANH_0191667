@@ -1,0 +1,97 @@
+<section class="breadcrumb-section set-bg" [ngStyle]="{backgroundImage:'url(assets/image/breadcrumb.jpg'}">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="breadcrumb__text">
+                    <h2>Đơn hàng của tôi</h2>
+                    <div class="breadcrumb__option">
+                        <a routerLink="/">Trang chủ</a>
+                        <span>Đơn hàng của tôi</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Order List Section -->
+<section class="order-section spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="order-container">
+                    <h3 class="order-title">Danh sách đơn hàng của tôi</h3>
+
+                    <!-- No Orders Message -->
+                    <div *ngIf="!listOrder || listOrder.length === 0" class="no-orders">
+                        <div class="no-orders-content">
+                            <i class="pi pi-shopping-bag" style="font-size: 4rem; color: #ddd;"></i>
+                            <h4>Chưa có đơn hàng nào</h4>
+                            <p>Hãy mua sắm và quay lại để xem đơn hàng của bạn!</p>
+                            <button pButton type="button" label="Mua sắm ngay" routerLink="/shop"
+                                class="p-button-primary"></button>
+                        </div>
+                    </div>
+
+                    <!-- Orders List -->
+                    <div *ngIf="listOrder && listOrder.length > 0" class="orders-list">
+                        <div *ngFor="let order of listOrder" class="order-card">
+                            <div class="order-header">
+                                <div class="order-info">
+                                    <h4>Đơn hàng #{{order.id}}</h4>
+                                    <span class="order-date">
+                                        {{order.dateOrder | date:'dd/MM/yyyy HH:mm'}}
+                                    </span>
+                                </div>
+                                <div class="order-status">
+                                    <span class="status-badge" [class]="getStatusClass(order.orderStatus)">
+                                        {{getStatusText(order.orderStatus)}}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="order-content">
+                                <div class="order-details">
+                                    <div class="detail-item">
+                                        <strong>Khách hàng:</strong>
+                                        <span>{{getCustomerFullName(order)}}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <strong>Địa chỉ:</strong>
+                                        <span>{{order.address || 'N/A'}}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <strong>Sản phẩm:</strong>
+                                        <span class="products-list">{{getProductNames(order)}}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <strong>Tổng tiền:</strong>
+                                        <span class="total-price">{{order.totalPrice |
+                                            currency:'VND':'symbol':'1.0-0'}}</span>
+                                    </div>
+                                </div>
+
+                                <div class="order-actions">
+                                    <button pButton type="button" label="Xem chi tiết" icon="pi pi-eye"
+                                        (click)="viewOrderDetail(order.id)"
+                                        class="p-button-outlined p-button-secondary"></button>
+
+                                    <!-- Nút tiếp tục thanh toán - chỉ hiển thị cho đơn hàng PENDING -->
+                                    <button *ngIf="canContinuePayment(order)" pButton type="button"
+                                        label="Tiếp tục thanh toán" icon="pi pi-credit-card"
+                                        (click)="continuePayment(order)" class="p-button-success"></button>
+
+                                    <button *ngIf="canCancelOrder(order)" pButton type="button" label="Hủy đơn hàng"
+                                        icon="pi pi-times" (click)="cancelOrder(order)"
+                                        class="p-button-danger p-button-outlined"></button>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

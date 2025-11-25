@@ -1,0 +1,117 @@
+/* Sidebar Navigation - Responsive */
+.sidebar .nav-link {
+  font-size: 1.1rem;
+  padding: 1rem 1.25rem;
+  transition: all 0.3s ease;
+  color: rgba(255, 255, 255, 0.9);
+  border-left: 3px solid transparent;
+}
+
+.sidebar .nav-link fa-icon {
+  margin-right: 0.75rem;
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.sidebar .nav-link span {
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  font-size: 1.05rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.sidebar-heading {
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 1.5rem 1.25rem 0.75rem;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Tablet (768px trở lên) */
+@media (min-width: 768px) {
+  .sidebar .nav-link {
+    font-size: 1.15rem;
+    padding: 1.05rem 1.25rem;
+  }
+
+  .sidebar .nav-link fa-icon {
+    font-size: 1.25rem;
+  }
+
+  .sidebar .nav-link span {
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+
+  .sidebar-heading {
+    font-size: 0.98rem;
+  }
+}
+
+/* Desktop (992px trở lên) */
+@media (min-width: 992px) {
+  .sidebar .nav-link {
+    font-size: 1.2rem;
+    padding: 1.1rem 1.25rem;
+  }
+
+  .sidebar .nav-link fa-icon {
+    font-size: 1.3rem;
+  }
+
+  .sidebar .nav-link span {
+    font-size: 1.15rem;
+    font-weight: 500;
+  }
+
+  .sidebar-heading {
+    font-size: 1rem;
+  }
+}
+
+/* Large Desktop (1200px trở lên) */
+@media (min-width: 1200px) {
+  .sidebar .nav-link {
+    font-size: 1.25rem;
+    padding: 1.15rem 1.25rem;
+  }
+
+  .sidebar .nav-link fa-icon {
+    font-size: 1.4rem;
+  }
+
+  .sidebar .nav-link span {
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
+
+  .sidebar-heading {
+    font-size: 1.05rem;
+  }
+}
+
+/* Hover effect - mượt mà */
+.sidebar .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-left-color: rgba(255, 255, 255, 0.5);
+  transform: translateX(3px);
+  color: rgba(255, 255, 255, 1);
+}
+
+/* Active state */
+.sidebar .nav-link.active {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-left-color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 1);
+}
+
+/* Sidebar brand */
+.sidebar-brand-text {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}

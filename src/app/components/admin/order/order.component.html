@@ -1,0 +1,158 @@
+<div class="order-container">
+  <h2>Quản lý đơn hàng</h2>
+  
+  <!-- Bộ lọc và tìm kiếm -->
+  <div class="filter-section">
+    <div class="filter-group">
+      <label for="statusFilter">Lọc theo trạng thái:</label>
+      <select id="statusFilter" 
+              [(ngModel)]="selectedStatus" 
+              (change)="onStatusFilterChange()"
+              class="status-filter">
+        <option value="">Tất cả trạng thái</option>
+        <option value="PENDING">Đang chờ thanh toán VNPay</option>
+        <option value="CONFIRMED">Chờ xác nhận</option>
+        <option value="PAID">Đã thanh toán</option>
+        <option value="SHIPPING">Đang giao</option>
+        <option value="COMPLETED">Giao thành công</option>
+        <option value="CANCELLED">Đã huỷ</option>
+      </select>
+    </div>
+
+    <div class="search-group">
+      <input type="text" 
+             [(ngModel)]="searchTerm" 
+             (input)="onSearch()"
+             placeholder="Tìm kiếm theo mã đơn hàng, tên khách hàng..."
+             class="search-input">
+    </div>
+  </div>
+
+  <!-- Thống kê -->
+  <div class="order-stats" *ngIf="filteredOrders.length > 0">
+    <div class="stat-item">
+      <span class="stat-label">Tổng số đơn:</span>
+      <span class="stat-value">{{ filteredOrders.length }}</span>
+    </div>
+    <div class="stat-item" *ngFor="let stat of statusStats | keyvalue">
+      <span class="stat-label">{{ statusMap[stat.key] }}:</span>
+      <span class="stat-value">{{ stat.value }}</span>
+    </div>
+  </div>
+  
+  <div *ngIf="filteredOrders.length === 0" class="no-orders">
+    <p>{{ searchTerm || selectedStatus ? 'Không tìm thấy đơn hàng phù hợp' : 'Không có đơn hàng nào' }}</p>
+  </div>
+  
+  <!-- Danh sách đơn hàng -->
+  <div class="order-list">
+    <div *ngFor="let order of paginatedOrders" [attr.id]="'order-' + order.id" class="order-item">
+      <!-- Nội dung đơn hàng giữ nguyên -->
+      <div class="order-header">
+        <h3>Đơn hàng #{{order?.id || 'N/A'}}</h3>
+        <span class="status-badge" [class]="getStatusClass(order?.orderStatus)">
+          {{getStatusText(order?.orderStatus)}}
+        </span>
+      </div>
+      
+      <div class="order-details">
+        <p><strong>Khách hàng:</strong> {{getCustomerFullName(order)}}</p>
+        <p><strong>Email:</strong> {{order?.email || 'N/A'}}</p>
+        <p><strong>Số điện thoại:</strong> {{order?.phone || 'N/A'}}</p>
+        <p><strong>Địa chỉ:</strong> {{order?.address || 'N/A'}}</p>
+        <p><strong>Tổng tiền:</strong> {{order?.totalPrice | currency:'VND':'symbol':'1.0-0'}}</p>
+        
+        <p><strong>Ngày thanh toán:</strong> 
+          <span [class]="order?.orderStatus === 'PAID' ? 'payment-date paid' : 'payment-date not-paid'">
+            {{formatDate(getPaymentDate(order))}}
+          </span>
+        </p>
+        
+        <p><strong>Ghi chú:</strong> {{order?.note || 'Không có ghi chú'}}</p>
+      </div>
+
+      <div class="order-actions">
+        <!-- Các nút action giữ nguyên -->
+        <button *ngIf="order?.orderStatus === 'PENDING'" 
+                (click)="onStatusButtonClick(order, 'cancel')"
+                class="btn btn-cancel">
+          ❌ Huỷ đơn hàng
+        </button>
+
+        <button *ngIf="order?.orderStatus === 'CONFIRMED'" 
+                (click)="onStatusButtonClick(order, 'confirm')"
+                [disabled]="isButtonDisabled(order?.orderStatus)"
+                class="btn btn-confirm">
+          Xác nhận đơn hàng
+        </button>
+
+        <button *ngIf="order?.orderStatus === 'PAID'" 
+                (click)="onStatusButtonClick(order, 'ship')"
+                [disabled]="isButtonDisabled(order?.orderStatus)"
+                class="btn btn-ship">
+          Bắt đầu giao hàng
+        </button>
+
+        <button *ngIf="order?.orderStatus === 'SHIPPING'" 
+                (click)="onStatusButtonClick(order, 'complete')"
+                [disabled]="isButtonDisabled(order?.orderStatus)"
+                class="btn btn-complete">
+          Hoàn thành đơn hàng
+        </button>
+
+        <span *ngIf="isButtonDisabled(order?.orderStatus) && order?.orderStatus && order?.orderStatus !== 'PENDING'" 
+              class="no-action-text">
+          Không thể thao tác
+        </span>
+
+        <button (click)="viewOrderDetail(order.id)" 
+                class="btn btn-detail">
+          👁️ Xem chi tiết
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phân trang -->
+  <div class="pagination-container" *ngIf="filteredOrders.length > 0">
+    <div class="pagination-info">
+      Hiển thị {{ startIndex + 1 }} - {{ endIndex }} của {{ filteredOrders.length }} đơn hàng
+    </div>
+    
+    <div class="pagination-controls">
+      <button (click)="previousPage()" 
+              [disabled]="currentPage === 1"
+              class="pagination-btn">
+        ‹ Trước
+      </button>
+      
+      <div class="page-numbers">
+        <button *ngFor="let page of getPageNumbers()" 
+                (click)="goToPage(page)"
+                [class.active]="page === currentPage"
+                class="page-btn">
+          {{ page }}
+        </button>
+      </div>
+      
+      <button (click)="nextPage()" 
+              [disabled]="currentPage === totalPages"
+              class="pagination-btn">
+        Sau ›
+      </button>
+    </div>
+
+    <div class="page-size-selector">
+      <label>Hiển thị:</label>
+      <select [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="50">50</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Toast messages -->
+  <p-toast></p-toast>
+</div>
