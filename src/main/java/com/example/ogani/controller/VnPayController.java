@@ -42,9 +42,9 @@ public class VnPayController {
     private OrderService orderService;
     
     // Thông tin cấu hình VnPay
-    private final String vnp_TmnCode = "SB1YAE0Q"; // Terminal ID của bạn
-    private final String vnp_HashSecret = "LHGM8QJ30I04W1IWX3V226XHJB73RE0C"; // Khóa bí mật
-    private final String vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";// dẫn đến sandbox
+    private final String vnp_TmnCode = "G0BIWY3X"; // Terminal ID của bạn
+    private final String vnp_HashSecret = "Y9COINJXFH5F1GREIF2V6XR7QWKKALHN"; // Khóa bí mật
+    private final String vnp_Url = " https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";// dẫn đến sandbox
     private final String vnp_Version = "2.1.0";
     private final String vnp_Command = "pay";
     private final String vnp_ReturnUrl = "http://localhost:4200/payment-result";// url mà fe nhận kết quả sau thanh toán
