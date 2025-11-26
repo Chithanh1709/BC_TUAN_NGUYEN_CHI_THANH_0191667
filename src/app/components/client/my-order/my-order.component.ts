@@ -69,12 +69,15 @@ export class MyOrderComponent implements OnInit {
   }
 
   getProductNames(order: any): string {
-    if (!order.orderItems || order.orderItems.length === 0) return 'Không có sản phẩm';
-    
-    const productNames = order.orderItems.map((item: any) => 
-      `${item.product?.name || item.name} (x${item.quantity})`
-    );
-    return productNames.join(', ');
+    if (!order || !order.orderdetails || order.orderdetails.length === 0) {
+    return 'Không có sản phẩm';
+  }
+  
+  const productNames = order.orderdetails.map((item: any) => 
+    `${item.name} (x${item.quantity})`
+  );
+  
+  return productNames.join(', ');
   }
 
   // Phương thức tiếp tục thanh toán

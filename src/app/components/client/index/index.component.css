@@ -64,3 +64,130 @@
 .header__cart ul li:last-child {
     margin-right: 0;
 }
+
+/* Căn giữa footer copyright */
+.footer__copyright {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-top: 1px solid #ebebeb;
+    margin-top: 30px;
+}
+
+.footer__copyright__text {
+    flex: 1;
+}
+
+.footer__copyright__text p {
+    margin: 0;
+    color: #1c1c1c;
+    font-size: 14px;
+}
+
+.footer__copyright__text a {
+    color: #7fad39;
+    text-decoration: none;
+}
+
+.footer__copyright__text a:hover {
+    text-decoration: underline;
+}
+
+.footer__copyright__payment {
+    flex: 0 0 auto;
+}
+
+.footer__copyright__payment img {
+    max-height: 30px;
+}
+
+/* Auth Modal Styles */
+.auth-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.auth-modal-content {
+  background: white;
+  border-radius: 8px;
+  padding: 30px;
+  max-width: 450px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideUp 0.3s ease-in-out;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  font-size: 30px;
+  cursor: pointer;
+  color: #666;
+  line-height: 1;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  transition: color 0.3s;
+}
+
+.close-btn:hover {
+  color: #000;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .auth-modal-content {
+    padding: 20px;
+    max-width: 95%;
+  }
+}
+
+/* Responsive cho mobile */
+@media (max-width: 768px) {
+    .footer__copyright {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .footer__copyright__text,
+    .footer__copyright__payment {
+        flex: 1 1 100%;
+    }
+}

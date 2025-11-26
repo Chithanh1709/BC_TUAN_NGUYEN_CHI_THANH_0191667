@@ -1,17 +1,17 @@
-import { Component, OnInit, ChangeDetectorRef, AfterContentChecked } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, AfterContentChecked, OnDestroy } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { faBars, faHeart, faRightFromBracket, faUser } from '@fortawesome/free-solid-svg-icons'
 import { faShoppingBag } from '@fortawesome/free-solid-svg-icons'
 import { faPhone } from '@fortawesome/free-solid-svg-icons'
 import { MessageService } from 'primeng/api';
-import { filter } from 'rxjs';
+import { filter, Subscription } from 'rxjs';
 import { AuthService } from 'src/app/_service/auth.service';
 import { CartService } from 'src/app/_service/cart.service';
 import { CategoryService } from 'src/app/_service/category.service';
 import { StorageService } from 'src/app/_service/storage.service';
 import { WishlistService } from 'src/app/_service/wishlist.service';
 import { faKey } from '@fortawesome/free-solid-svg-icons'; // 👈 import icon
-
+import { AuthGuardService } from '../../../_service/auth-guard.service';
 
 @Component({
   selector: 'app-index',
@@ -20,7 +20,7 @@ import { faKey } from '@fortawesome/free-solid-svg-icons'; // 👈 import icon
   providers: [MessageService]
 
 })
-export class IndexComponent implements OnInit {
+export class IndexComponent implements OnInit, OnDestroy {
   faKey = faKey;
   listItemInCart: any[] = [];
   totalPrice = 0;
@@ -33,8 +33,8 @@ export class IndexComponent implements OnInit {
 
   showDepartment = false;
   showPassword = false;
-
-
+  showAuthModal: boolean = false;
+  private loginModalSubscription?: Subscription;
 
   loginForm: any = {
     username: null,
@@ -64,7 +64,8 @@ export class IndexComponent implements OnInit {
 
   loading = false;
   successMessage = '';
-
+  private authModalSubscription?: Subscription;
+ 
 
 
 
@@ -77,7 +78,9 @@ export class IndexComponent implements OnInit {
     private storageService: StorageService,
     private messageService: MessageService,
     private categoryService: CategoryService,
-    private router: Router) {
+    private router: Router,
+    private authGuardService: AuthGuardService
+  ) {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: any) => {
@@ -98,7 +101,28 @@ export class IndexComponent implements OnInit {
     if (currentNavigation?.extras?.state?.['showLoginModal']) {
       this.authModal = true;
     }
+
+    // Lắng nghe sự kiện hiển thị modal login từ AuthGuard
+    this.loginModalSubscription = this.authGuardService.authModal$
+      .subscribe(isOpen => {
+        this.authModal = isOpen;
+      });
   }
+
+  ngOnDestroy(): void {
+    if (this.loginModalSubscription) {
+      this.loginModalSubscription.unsubscribe();
+    }
+
+     if (this.authModalSubscription) {
+      this.authModalSubscription.unsubscribe();
+    }
+  }
+
+   onAuthModalClose(): void {
+    this.authGuardService.closeAuthModal();
+  }
+  
 
   showDepartmentClick() {
     this.showDepartment = !this.showDepartment;
@@ -256,8 +280,15 @@ export class IndexComponent implements OnInit {
     })
   }
 
+  closeAuthModal(): void {
+    this.showAuthModal = false;
+  }
 
-
+  onLoginSuccess(): void {
+    this.showAuthModal = false;
+    // Reload trang hoặc cập nhật state
+    window.location.reload();
+  }
 
   showSuccess(text: string) {
     this.messageService.add({ severity: 'success', summary: 'Success', detail: text });

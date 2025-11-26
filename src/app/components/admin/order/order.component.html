@@ -76,7 +76,7 @@
         <button *ngIf="order?.orderStatus === 'PENDING'" 
                 (click)="onStatusButtonClick(order, 'cancel')"
                 class="btn btn-cancel">
-          ❌ Huỷ đơn hàng
+          Huỷ đơn hàng
         </button>
 
         <button *ngIf="order?.orderStatus === 'CONFIRMED'" 
@@ -107,7 +107,7 @@
 
         <button (click)="viewOrderDetail(order.id)" 
                 class="btn btn-detail">
-          👁️ Xem chi tiết
+          Xem chi tiết
         </button>
       </div>
     </div>

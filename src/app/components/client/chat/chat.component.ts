@@ -1,5 +1,5 @@
 // src/app/components/chat/chat.component.ts
-import { Component, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ChatMessage, ChatResponse, ChatService } from 'src/app/_service/chat.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
@@ -8,149 +8,153 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
-export class ChatComponent implements OnInit {
-  userMessage = '';
-  messages: { text: string, isUser: boolean, timestamp: Date, isHtml?: boolean, safeHtml?: SafeHtml }[] = [];
-  isLoading = false;
-  isChatOpen = false;
-  hasNewMessage = false;
+export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
+  @ViewChild('chatMessages') private chatMessagesContainer!: ElementRef;
+  
+  messages: ChatMessage[] = [];
+  userInput: string = '';
+  isLoading: boolean = false;
+  isChatOpen: boolean = false;
+  userId: number | undefined;
 
-  constructor(
-    private chatService: ChatService,
-    private sanitizer: DomSanitizer
-  ) {}
+  // Thêm biến để quản lý vị trí drag
+  isDragging = false;
+  dragPosition = { x: 0, y: 0 };
+  initialPosition = { x: 0, y: 0 };
 
-  ngOnInit() {
+  constructor(private chatbotService: ChatService) {}
+
+  ngOnInit(): void {
+    // Lấy userId từ localStorage hoặc auth service
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    this.userId = user.uid;
+
+    // Thêm tin nhắn chào mừng
     this.messages.push({
-      text: 'Xin chào! Tôi có thể giúp gì cho bạn?',
-      isUser: false,
+      type: 'bot',
+      content: 'Xin chào! 👋 Tôi là trợ lý ảo của Ogani. Tôi có thể giúp bạn:\n\n✅ Tìm kiếm sản phẩm\n✅ Tư vấn mua hàng\n✅ Tra cứu đơn hàng\n✅ Kiểm tra trạng thái giao hàng\n\nBạn cần hỗ trợ gì không?',
       timestamp: new Date()
     });
   }
 
-  sendMessage() {
-    if (!this.userMessage.trim() || this.isLoading) return;
+  ngAfterViewChecked(): void {
+    this.scrollToBottom();
+  }
 
-    const userMessage = this.userMessage.trim();
+  toggleChat(): void {
+    this.isChatOpen = !this.isChatOpen;
+  }
+
+  sendMessage(): void {
+    if (!this.userInput.trim() || this.isLoading) {
+      return;
+    }
+
+    const userMessage = this.userInput.trim();
     
-    this.messages.push({ 
-      text: userMessage, 
-      isUser: true, 
-      timestamp: new Date() 
+    // Thêm tin nhắn của user
+    this.messages.push({
+      type: 'user',
+      content: userMessage,
+      timestamp: new Date()
     });
-    
-    this.isLoading = true;
-    
-    const chatMessage: ChatMessage = {
-      message: userMessage,
-      userId: this.getUserId()
-    };
 
-    this.chatService.sendMessage(chatMessage).subscribe({
-      next: (response: ChatResponse) => {
-        const formattedResponse = this.formatBotResponse(response.answer);
-        this.messages.push({ 
-          text: response.answer, 
-          isUser: false, 
+    this.userInput = '';
+    this.isLoading = true;
+
+    // Gửi đến API
+    this.chatbotService.sendMessage(userMessage, this.userId).subscribe({
+      next: (response) => {
+        this.messages.push({
+          type: 'bot',
+          content: response.reply,
           timestamp: new Date(),
-          isHtml: true,
-          safeHtml: this.sanitizer.bypassSecurityTrustHtml(formattedResponse)
+          products: response.relatedProducts,
+          orders: response.relatedOrders
         });
-        this.scrollToBottom();
+        this.isLoading = false;
       },
       error: (error) => {
-        console.error('Lỗi:', error);
-        this.messages.push({ 
-          text: 'Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại.', 
-          isUser: false, 
-          timestamp: new Date() 
+        console.error('Error:', error);
+        this.messages.push({
+          type: 'bot',
+          content: '❌ Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại sau.',
+          timestamp: new Date()
         });
-        this.scrollToBottom();
-      },
-      complete: () => {
         this.isLoading = false;
-        this.userMessage = '';
       }
     });
-
-    this.userMessage = '';
   }
 
-  private formatBotResponse(text: string): string {
-    if (!text) return text;
-
-    // Format sản phẩm: chỉ hiển thị tên, giá và link
-    // Pattern với khoảng trắng linh hoạt
-    const productPattern = /(\d+\.\s+[^\n]+)\s*\n\s*Link:\s*(http:\/\/localhost:4200\/product\/\d+)\s*\n\s*ID:\s*\d+\s*\n\s*Giá:\s*([^\n]+)\s*\n\s*Loại:\s*[^\n]+/g;
-    
-    console.log('Original text:', text);
-    text = text.replace(productPattern, (match, name, link, price) => {
-      console.log('Match found:', { match, name, link, price });
-      return `
-        <div class="product-item">
-          <div class="product-info">
-            <div class="product-name">${name}</div>
-            <div class="product-price">${price}</div>
-          </div>
-          <a href="${link}" target="_blank" rel="noopener noreferrer" class="product-link">
-            🔗 Bấm để xem chi tiết sản phẩm
-          </a>
-        </div>
-      `;
-    });
-
-    // Format markdown-like to HTML
-    return text
-      // Bold text: **text** -> <strong>text</strong>
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      // Italic: *text* -> <em>text</em>
-      .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      // Headers: **HEADER** -> <div class="message-header">HEADER</div>
-      .replace(/\*\*([^*\n]+)\*\*\s*\n/g, '<div class="message-header">$1</div>')
-      // Lists: * item -> <li>item</li>
-      .replace(/^\s*\*\s+(.+)$/gm, '<li>$1</li>')
-      // Wrap lists in <ul>
-      .replace(/(<li>.*<\/li>)/s, '<ul class="message-list">$1</ul>')
-      // Line breaks
-      .replace(/\n/g, '<br>')
-      // Products sections
-      .replace(/SẢN PHẨM (\d+):/g, '<div class="product-header">SẢN PHẨM $1:</div>');
-  }
-
-  toggleChat() {
-    this.isChatOpen = !this.isChatOpen;
-    if (this.isChatOpen) {
-      this.hasNewMessage = false;
-      setTimeout(() => this.scrollToBottom(), 100);
-    }
-  }
-
-  // Các methods khác giữ nguyên...
-  onKeyPress(event: KeyboardEvent) {
+  onKeyPress(event: KeyboardEvent): void {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       this.sendMessage();
     }
   }
 
-  private scrollToBottom() {
-    setTimeout(() => {
-      const chatMessages = document.querySelector('.chat-messages');
-      if (chatMessages) {
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }
-    }, 100);
+  scrollToBottom(): void {
+    try {
+      this.chatMessagesContainer.nativeElement.scrollTop = 
+        this.chatMessagesContainer.nativeElement.scrollHeight;
+    } catch(err) { }
   }
 
-  private getUserId(): string {
-    return localStorage.getItem('userId') || 'user-' + Date.now();
+  viewProduct(productId: number): void {
+    // Navigate đến trang chi tiết sản phẩm
+    window.location.href = `/product/${productId}`;
   }
 
-  clearChat() {
+  viewOrder(orderId: number): void {
+    // Navigate đến trang chi tiết đơn hàng
+    window.location.href = `/orders/${orderId}`;
+  }
+
+  clearChat(): void {
     this.messages = [{
-      text: 'Xin chào! Tôi có thể giúp gì cho bạn?',
-      isUser: false,
+      type: 'bot',
+      content: 'Đã xóa lịch sử chat. Bạn cần hỗ trợ gì không? 😊',
       timestamp: new Date()
     }];
+  }
+
+  // Method để format nội dung tin nhắn (thay thế \n thành <br>)
+  formatMessageContent(content: string): string {
+    if (!content) return '';
+    return content.replace(/\n/g, '<br/>');
+  }
+
+  // Bắt đầu drag
+  onDragStart(event: MouseEvent): void {
+    if (this.isChatOpen) return; // Chỉ drag khi chat đóng
+    
+    this.isDragging = true;
+    this.initialPosition = {
+      x: event.clientX - this.dragPosition.x,
+      y: event.clientY - this.dragPosition.y
+    };
+    
+    event.preventDefault();
+  }
+
+  // Đang drag
+  @HostListener('document:mousemove', ['$event'])
+  onDrag(event: MouseEvent): void {
+    if (!this.isDragging) return;
+    
+    this.dragPosition = {
+      x: event.clientX - this.initialPosition.x,
+      y: event.clientY - this.initialPosition.y
+    };
+  }
+
+  // Kết thúc drag
+  @HostListener('document:mouseup')
+  onDragEnd(): void {
+    this.isDragging = false;
+  }
+
+  ngOnDestroy(): void {
+    // Thực hiện cleanup nếu cần thiết
   }
 }

@@ -1,64 +1,143 @@
-<!-- src/app/components/chat/chat.component.html -->
-<!-- Nút chat floating -->
-<div class="chat-floating-button" (click)="toggleChat()" *ngIf="!isChatOpen">
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="chat-icon">
-    <path d="M4.913 2.658c2.075-.27 4.19-.408 6.337-.408 2.147 0 4.262.139 6.337.408 1.922.25 3.291 1.861 3.405 3.727a4.403 4.403 0 00-1.032-.211 50.89 50.89 0 00-8.42 0c-2.358.196-4.04 2.19-4.04 4.434v4.286a4.47 4.47 0 002.433 3.984L7.28 21.53A.75.75 0 016 21v-4.03a48.527 48.527 0 01-1.087-.128C2.905 16.58 1.5 14.833 1.5 12.862V6.638c0-1.97 1.405-3.718 3.413-3.979z" />
-    <path d="M15.75 7.5c-1.376 0-2.739.057-4.086.169C10.124 7.797 9 9.103 9 10.609v4.285c0 1.507 1.128 2.814 2.67 2.94 1.243.102 2.5.157 3.768.165l2.782 2.781a.75.75 0 001.28-.53v-2.39l.33-.026c1.542-.125 2.67-1.433 2.67-2.94v-4.286c0-1.505-1.125-2.811-2.664-2.94A49.392 49.392 0 0015.75 7.5z" />
-  </svg>
-  <span class="chat-badge" *ngIf="hasNewMessage">1</span>
-</div>
+<div class="chatbot-container" [class.open]="isChatOpen">
+  <!-- Chat Button - Có thể kéo thả -->
+  <button class="chat-toggle-btn" 
+          (click)="toggleChat()" 
+          (mousedown)="onDragStart($event)"
+          [style.transform]="'translate(' + dragPosition.x + 'px, ' + dragPosition.y + 'px)'"
+          [class.dragging]="isDragging"
+          *ngIf="!isChatOpen">
+    <!-- Icon tin nhắn -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="chat-icon">
+      <path d="M4.913 2.658c2.075-.27 4.19-.408 6.337-.408 2.147 0 4.262.139 6.337.408 1.922.25 3.291 1.861 3.405 3.727a4.403 4.403 0 00-1.032-.211 50.89 50.89 0 00-8.42 0c-2.358.196-4.04 2.19-4.04 4.434v4.286a4.47 4.47 0 002.433 3.984L7.28 21.53A.75.75 0 016 21v-4.03a48.527 48.527 0 01-1.087-.128C2.905 16.58 1.5 14.833 1.5 12.862V6.638c0-1.97 1.405-3.718 3.413-3.979z" />
+      <path d="M15.75 7.5c-1.376 0-2.739.057-4.086.169C10.124 7.797 9 9.103 9 10.609v4.285c0 1.507 1.128 2.814 2.67 2.94 1.243.102 2.5.157 3.768.165l2.782 2.781a.75.75 0 001.28-.53v-2.39l.33-.026c1.542-.125 2.67-1.433 2.67-2.94v-4.286c0-1.505-1.125-2.811-2.664-2.94A49.392 49.392 0 0015.75 7.5z" />
+    </svg>
+    
+    <span class="badge" *ngIf="messages.length > 1">{{messages.length - 1}}</span>
+    <span class="pulse-ring"></span>
+  </button>
 
-<!-- Chat container -->
-<div class="chat-wrapper" *ngIf="isChatOpen">
-  <div class="chat-container">
+  <!-- Chat Window -->
+  <div class="chat-window" *ngIf="isChatOpen">
+    <!-- Header -->
     <div class="chat-header">
-      <h3>💬 Chat hỗ trợ</h3>
+      <div class="header-content">
+        <div class="bot-avatar">
+          <i class="fas fa-robot"></i>
+        </div>
+        <div class="header-text">
+          <h4>Trợ lý AI Ogani</h4>
+          <span class="status">
+            <span class="status-dot"></span>
+            Đang hoạt động
+          </span>
+        </div>
+      </div>
       <div class="header-actions">
-        <button class="clear-btn" (click)="clearChat()">🗑️</button>
-        <button class="close-btn" (click)="toggleChat()">✕</button>
+        <button (click)="clearChat()" title="Xóa lịch sử chat" class="btn-clear">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+        <button (click)="toggleChat()" title="Đóng chat" class="btn-close">
+          <i class="fas fa-times"></i>
+        </button>
       </div>
     </div>
 
-    <div class="chat-messages" #messageContainer>
+    <!-- Messages -->
+    <div class="chat-messages" #chatMessages>
       <div *ngFor="let message of messages" 
-           [class]="'message ' + (message.isUser ? 'user-message' : 'bot-message')">
-        <div class="message-content" 
-             [innerHTML]="message.safeHtml || message.text">
+           class="message-wrapper"
+           [class.user-message]="message.type === 'user'"
+           [class.bot-message]="message.type === 'bot'">
+        
+        <div class="message-avatar" *ngIf="message.type === 'bot'">
+          <i class="fas fa-robot"></i>
         </div>
-        <div class="message-time">
-          {{ message.timestamp | date:'HH:mm' }}
+
+        <div class="message-content">
+          <div class="message-bubble">
+            <p [innerHTML]="formatMessageContent(message.content)"></p>
+          </div>
+          <span class="message-time">{{message.timestamp | date:'short'}}</span>
+
+          <!-- Related Products -->
+          <div class="related-items" *ngIf="message.products && message.products.length > 0">
+            <h5><i class="fas fa-shopping-basket"></i> Sản phẩm liên quan:</h5>
+            <div class="product-cards">
+              <div class="product-card" *ngFor="let product of message.products" 
+                   (click)="viewProduct(product.id)">
+                <img [src]="product.image || 'assets/images/no-image.png'" 
+                     [alt]="product.name">
+                <div class="product-info">
+                  <h6>{{product.name}}</h6>
+                  <p class="price">{{product.price | number}} VNĐ</p>
+                  <p class="stock" [class.out-of-stock]="product.quantity === 0">
+                    <i class="fas" [class.fa-check-circle]="product.quantity > 0" 
+                       [class.fa-times-circle]="product.quantity === 0"></i>
+                    {{product.quantity > 0 ? 'Còn hàng' : 'Hết hàng'}}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Related Orders -->
+          <div class="related-items" *ngIf="message.orders && message.orders.length > 0">
+            <h5><i class="fas fa-box"></i> Đơn hàng liên quan:</h5>
+            <div class="order-cards">
+              <div class="order-card" *ngFor="let order of message.orders"
+                   (click)="viewOrder(order.orderId)">
+                <div class="order-header">
+                  <span class="order-id">#{{order.orderId}}</span>
+                  <span class="order-status" [ngClass]="'status-' + order.orderStatus">
+                    {{order.orderStatus}}
+                  </span>
+                </div>
+                <div class="order-details">
+                  <p><i class="fas fa-money-bill-wave"></i> Tổng: <strong>{{order.totalPrice | number}} VNĐ</strong></p>
+                  <p><i class="fas fa-calendar"></i> Ngày đặt: {{order.dateOrder | date:'short'}}</p>
+                  <p><i class="fas fa-credit-card"></i> Thanh toán: {{order.payMethod}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="message-avatar" *ngIf="message.type === 'user'">
+          <i class="fas fa-user-circle"></i>
         </div>
       </div>
-      
-      <div class="message bot-message loading" *ngIf="isLoading">
+
+      <!-- Loading indicator -->
+      <div class="message-wrapper bot-message" *ngIf="isLoading">
+        <div class="message-avatar">
+          <i class="fas fa-robot"></i>
+        </div>
         <div class="message-content">
-          <span>Đang trả lời</span>
-          <div class="typing-indicator">
-            <span></span>
-            <span></span>
-            <span></span>
+          <div class="message-bubble loading">
+            <div class="typing-indicator">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="chat-input-container">
-      <div class="chat-input">
-        <textarea
-          [(ngModel)]="userMessage"
-          (keypress)="onKeyPress($event)"
-          placeholder="Nhập tin nhắn..."
-          rows="1"
-          [disabled]="isLoading">
-        </textarea>
-        <button 
-          class="send-btn" 
-          (click)="sendMessage()"
-          [disabled]="isLoading || !userMessage.trim()">
-          📤
-        </button>
-      </div>
-      <div class="input-hint">Enter để gửi, Shift+Enter để xuống dòng</div>
+    <!-- Input -->
+    <div class="chat-input">
+      <textarea 
+        [(ngModel)]="userInput"
+        (keypress)="onKeyPress($event)"
+        placeholder="Nhập tin nhắn... (Enter để gửi)"
+        rows="1"
+        [disabled]="isLoading"></textarea>
+      <button (click)="sendMessage()" 
+              [disabled]="!userInput.trim() || isLoading"
+              title="Gửi tin nhắn (Enter)"
+              class="btn-send">
+        <i class="fas fa-paper-plane"></i>
+      </button>
     </div>
   </div>
 </div>
