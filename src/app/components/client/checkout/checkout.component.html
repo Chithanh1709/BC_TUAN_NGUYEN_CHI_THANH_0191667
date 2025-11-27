@@ -92,11 +92,18 @@
                             <h4>Đơn hàng của bạn</h4>
                             <div class="checkout__order__products">Sản phẩm <span>Tổng</span></div>
                             <ul>
-                                <li *ngFor="let item of cartService.items">{{item.name}} <span>{{item.subTotal |  currency:'VND':'symbol':'1.0-0':'vi-VN'}}</span></li>
+                                <li *ngFor="let item of cartService.items">
+                                    <span class="product-name">{{item.name}}</span>
+                                    <span class="product-price">{{item.subTotal | currency:'VND':'symbol':'1.0-0':'vi-VN'}}</span>
+                                </li>
                             </ul>
-                            <div class="checkout__order__total">Tổng <span>{{cartService.total |  currency:'VND':'symbol':'1.0-0':'vi-VN' }}</span></div>
-                            <p>Lorem ipsum dolor sit amet, consectetur adip elit, sed do eiusmod tempor incididunt
-                                ut labore et dolore magna aliqua.</p>
+                            <div class="checkout__order__total">
+                                Tổng 
+                                <span>{{cartService.total | currency:'VND':'symbol':'1.0-0':'vi-VN'}}</span>
+                            </div>
+                          
+                            
+                            <!-- Payment methods -->
                             <div class="checkout__input__checkbox">
                                 <label for="payment">
                                     Thanh toán khi nhận hàng

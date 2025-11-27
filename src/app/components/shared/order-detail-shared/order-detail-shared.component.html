@@ -275,22 +275,28 @@
       </div>
       
       <div class="review-section">
-        <label for="reviewComment">Nhận xét chi tiết:</label>
+        <label>Nhận xét (tùy chọn):</label>
         <textarea 
-          id="reviewComment"
           [value]="reviewComment"
           (input)="onReviewCommentChange($event)"
-          placeholder="Hãy chia sẻ cảm nhận của bạn về sản phẩm..."
-          rows="4"
-          class="review-textarea">
-        </textarea>
+          placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm..."
+          maxlength="500"></textarea>
+        <div class="char-counter" 
+             [class.warning]="reviewComment.length > 400"
+             [class.error]="reviewComment.length >= 500">
+          {{reviewComment.length}}/500 ký tự
+        </div>
       </div>
     </div>
     <div class="modal-footer">
-      <button (click)="closeReviewModal()" class="btn btn-cancel">Hủy</button>
+      <button (click)="closeReviewModal()" 
+              class="btn btn-cancel">
+        Hủy
+      </button>
       <button (click)="onSubmitReview()" 
-              [disabled]="currentRating === 0 || isSubmittingReview || !isUserLoggedIn()"
-              class="btn btn-submit">
+              [disabled]="currentRating === 0 || isSubmittingReview"
+              [class.loading]="isSubmittingReview"
+              class="btn btn-primary">
         {{isSubmittingReview ? 'Đang gửi...' : 'Gửi đánh giá'}}
       </button>
     </div>

@@ -29,6 +29,7 @@ export class AdminOrderDetailComponent implements OnInit {
     this.isLoading = true;
     this.orderService.getOrderDetail(this.orderId).subscribe({
       next: (res) => {
+
         if (res && res.length > 0) {
           this.order = res[0].order;
           this.orderItems = res;

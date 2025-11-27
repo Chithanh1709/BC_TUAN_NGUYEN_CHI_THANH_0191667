@@ -1,0 +1,93 @@
+.checkout__order__products {
+    font-weight: 600;
+    color: #1c1c1c;
+    list-style: none;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e1e1e1;
+    display: flex;
+    justify-content: space-between;
+}
+
+.checkout__order ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+}
+
+.checkout__order ul li {
+    font-size: 16px;
+    color: #6f6f6f;
+    line-height: 1.6;
+    padding: 12px 0;
+    border-bottom: 1px solid #f2f2f2;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 15px;
+    align-items: start;
+}
+
+/* Tên sản phẩm có thể xuống dòng */
+.checkout__order ul li {
+    flex-wrap: wrap;
+}
+
+.checkout__order ul li:first-child {
+    word-break: break-word;
+    flex: 1;
+    min-width: 0;
+    padding-right: 10px;
+}
+
+.checkout__order ul li .product-name {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    line-height: 1.5;
+}
+
+.checkout__order ul li .product-price {
+    font-weight: 600;
+    color: #7fad39;
+    white-space: nowrap;
+    text-align: right;
+}
+
+/* Đảm bảo giá tiền luôn nằm bên phải */
+.checkout__order ul li span:last-child {
+    margin-left: auto;
+}
+
+.checkout__order__total {
+    font-size: 18px;
+    color: #1c1c1c;
+    font-weight: 700;
+    border-top: 1px solid #e1e1e1;
+    padding-top: 15px;
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.checkout__order__total span {
+    color: #7fad39;
+    font-size: 20px;
+}
+
+/* Responsive cho mobile */
+@media (max-width: 576px) {
+    .checkout__order ul li {
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        font-size: 14px;
+    }
+
+    .checkout__order__total {
+        font-size: 16px;
+    }
+
+    .checkout__order__total span {
+        font-size: 18px;
+    }
+}
