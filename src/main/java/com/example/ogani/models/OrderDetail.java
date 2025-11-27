@@ -29,6 +29,6 @@ public class OrderDetail {
 
     @ManyToOne
     @JoinColumn(name = "order_id")
-    @JsonIgnore 
+    // @JsonIgnore 
     private Order order;
 }

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.Base64;
 
 @Service
 @Slf4j
@@ -480,6 +481,15 @@ public class GeminiChatService {
                     info.setPrice(p.getPrice());
                     info.setQuantity(p.getQuantity());
                     info.setCategoryName(p.getCategory() != null ? p.getCategory().getName() : null);
+                    String imageData = null;
+                if (p.getImages() != null && !p.getImages().isEmpty()) {
+                    // Nếu dữ liệu ảnh được lưu dưới dạng byte[] thì chuyển sang Base64 string để phù hợp với imageUrl
+                    byte[] data = p.getImages().iterator().next().getData(); // Hoặc getUrl() nếu lưu URL thay vì byte[]
+                    if (data != null) {
+                        imageData = "data:image/png;base64," + Base64.getEncoder().encodeToString(data);
+                    }
+                }
+                info.setImageUrl(imageData); // Set null nếu không có ảnh
                     return info;
                 })
                 .collect(Collectors.toList());
@@ -497,7 +507,7 @@ public class GeminiChatService {
         
         // Lấy 5 tin nhắn gần nhất
         recentChats.stream()
-                .limit(5)
+                .limit(10)
                 .forEach(chat -> {
                     if (chat.getMessage() != null) {
                         keywords.append(" ").append(chat.getMessage());
