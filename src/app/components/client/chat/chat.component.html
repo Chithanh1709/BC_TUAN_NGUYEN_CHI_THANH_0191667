@@ -65,7 +65,7 @@
             <div class="product-cards">
               <div class="product-card" *ngFor="let product of message.products" 
                    (click)="viewProduct(product.id)">
-                <img [src]="product.image || 'assets/images/no-image.png'" 
+                <img [src]="product.imageUrl || 'assets/images/no-image.png'" 
                      [alt]="product.name">
                 <div class="product-info">
                   <h6>{{product.name}}</h6>

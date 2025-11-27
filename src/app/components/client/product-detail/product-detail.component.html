@@ -69,7 +69,7 @@
                         <div class="tab-pane">
                             <div class="product__details__tab__desc">
                                 <h4>Chi tiết sản phẩm</h4>
-                                <p>{{product.content}}</p>
+                                <div class="product-content" [innerHTML]="formatContent(product.content)"></div>
                             </div>
                         </div>
                     </p-tabPanel>

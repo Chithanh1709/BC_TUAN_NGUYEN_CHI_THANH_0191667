@@ -2,6 +2,7 @@
 import { AfterViewChecked, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ChatMessage, ChatResponse, ChatService } from 'src/app/_service/chat.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-chat',
@@ -22,7 +23,10 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
   dragPosition = { x: 0, y: 0 };
   initialPosition = { x: 0, y: 0 };
 
-  constructor(private chatbotService: ChatService) {}
+  constructor(
+    private chatbotService: ChatService,
+    private router: Router // Thêm Router
+  ) {}
 
   ngOnInit(): void {
     // Lấy userId từ localStorage hoặc auth service
@@ -102,12 +106,34 @@ export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   viewProduct(productId: number): void {
     // Navigate đến trang chi tiết sản phẩm
-    window.location.href = `/product/${productId}`;
+    this.router.navigate(['/product', productId]);
   }
 
   viewOrder(orderId: number): void {
     // Navigate đến trang chi tiết đơn hàng
-    window.location.href = `/orders/${orderId}`;
+    this.router.navigate(['/orders', orderId]);
+  }
+
+  // Thêm method để lấy ảnh sản phẩm
+  getProductImage(product: any): string {
+    if (product.imageUrl) {
+      // Nếu là base64
+      if (product.imageUrl.startsWith('data:image')) {
+        return product.imageUrl;
+      }
+      // Nếu là URL
+      return product.imageUrl;
+    }
+    // Ảnh mặc định nếu không có
+    return 'assets/images/no-image.png';
+  }
+
+  // Format giá tiền
+  formatPrice(price: number): string {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND'
+    }).format(price);
   }
 
   clearChat(): void {

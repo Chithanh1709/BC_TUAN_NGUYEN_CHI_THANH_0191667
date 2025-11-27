@@ -67,6 +67,11 @@
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   border: 2px solid #f0f0f0;
+  transition: all 0.3s;
+}
+
+.sidebar__item:hover {
+  border-color: #7fad39;
 }
 
 .sidebar__item h4 {
@@ -75,6 +80,7 @@
   margin-bottom: 20px;
   padding-bottom: 10px;
   border-bottom: 2px solid #7fad39;
+  font-size: 18px;
 }
 
 .sidebar__item ul {
@@ -397,6 +403,148 @@
   background: #6a9630;
 }
 
+/* Price Checkbox Section */
+.sidebar__item {
+  margin-bottom: 30px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 2px solid #f0f0f0;
+  transition: all 0.3s;
+}
+
+.sidebar__item:hover {
+  border-color: #7fad39;
+}
+
+.sidebar__item h4 {
+  color: #1c1c1c;
+  font-weight: 700;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #7fad39;
+  font-size: 18px;
+}
+
+/* Price Checkbox Group */
+.price-checkbox-group {
+  padding: 10px 0;
+}
+
+.price-checkbox-item {
+  margin-bottom: 14px;
+}
+
+.price-checkbox-item:last-child {
+  margin-bottom: 0;
+}
+
+/* Custom Checkbox */
+.custom-checkbox {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  padding-left: 35px;
+  font-size: 15px;
+  color: #6f6f6f;
+  transition: all 0.3s;
+  line-height: 1.6;
+}
+
+.custom-checkbox:hover {
+  color: #7fad39;
+}
+
+.custom-checkbox:hover .checkmark {
+  border-color: #7fad39;
+  transform: translateY(-50%) scale(1.05);
+}
+
+/* Hide default checkbox */
+.custom-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Custom Checkmark */
+.custom-checkbox .checkmark {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 22px;
+  width: 22px;
+  background-color: white;
+  border: 2px solid #e1e1e1;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+/* Checkmark when checked */
+.custom-checkbox input:checked ~ .checkmark {
+  background-color: #7fad39;
+  border-color: #7fad39;
+  box-shadow: 0 2px 8px rgba(127, 173, 57, 0.3);
+}
+
+/* Checkmark icon (tick) */
+.custom-checkbox .checkmark::after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 7px;
+  top: 3px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.custom-checkbox input:checked ~ .checkmark::after {
+  display: block;
+}
+
+/* Label text */
+.custom-checkbox .label-text {
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* Animation khi check */
+@keyframes checkboxPop {
+  0% {
+    transform: translateY(-50%) scale(1);
+  }
+  50% {
+    transform: translateY(-50%) scale(1.15);
+  }
+  100% {
+    transform: translateY(-50%) scale(1);
+  }
+}
+
+.custom-checkbox input:checked ~ .checkmark {
+  animation: checkboxPop 0.3s ease;
+}
+
+/* Focus state cho accessibility */
+.custom-checkbox input:focus ~ .checkmark {
+  outline: 2px solid #7fad39;
+  outline-offset: 2px;
+}
+
+/* Active state */
+.custom-checkbox:active .checkmark {
+  transform: translateY(-50%) scale(0.95);
+}
+
 /* Responsive */
 @media (max-width: 991px) {
   .featured__item__pic {
@@ -452,6 +600,36 @@
   .sidebar__item {
     padding: 15px;
   }
+
+  .sidebar__item h4 {
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+
+  .price-checkbox-group {
+    padding: 5px 0;
+  }
+
+  .price-checkbox-item {
+    margin-bottom: 12px;
+  }
+
+  .custom-checkbox {
+    font-size: 14px;
+    padding-left: 32px;
+  }
+
+  .custom-checkbox .checkmark {
+    height: 20px;
+    width: 20px;
+  }
+
+  .custom-checkbox .checkmark::after {
+    left: 6px;
+    top: 2px;
+    width: 4px;
+    height: 9px;
+  }
 }
 
 @media (max-width: 575px) {
@@ -470,6 +648,14 @@
   .col-lg-3.col-md-4.col-sm-6 {
     flex: 0 0 50%;
     max-width: 50%;
+  }
+
+  .sidebar__item h4 {
+    font-size: 15px;
+  }
+
+  .custom-checkbox {
+    font-size: 13px;
   }
 }
 

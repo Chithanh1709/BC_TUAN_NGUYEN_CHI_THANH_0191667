@@ -18,7 +18,7 @@ export interface ProductInfo {
   price: number;
   quantity: number;
   categoryName: string;
-  image: string;
+  imageUrl: string;
 }
 
 export interface OrderInfo {

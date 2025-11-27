@@ -1,68 +1,237 @@
+<p-toast></p-toast>
+
 <div class="container-fluid">
-    <p-toolbar>
+    <!-- Header Section -->
+    <div class="page-header mb-4">
+        <h2 class="page-title">
+            <i class="pi pi-chart-bar"></i>
+            Thống kê tồn kho
+        </h2>
+        <p class="page-subtitle">Quản lý và theo dõi tình trạng tồn kho sản phẩm</p>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="stat-card stat-card-warning">
+                <div class="stat-icon">
+                    <i class="pi pi-exclamation-triangle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{lowStockCount}}</h3>
+                    <p>Sắp hết hàng</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card stat-card-danger">
+                <div class="stat-icon">
+                    <i class="pi pi-times-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{outOfStockCount}}</h3>
+                    <p>Hết hàng</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card stat-card-success">
+                <div class="stat-icon">
+                    <i class="pi pi-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{inStockCount}}</h3>
+                    <p>Còn hàng</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card stat-card-info">
+                <div class="stat-icon">
+                    <i class="pi pi-box"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{totalProducts}}</h3>
+                    <p>Tổng sản phẩm</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toolbar -->
+    <p-toolbar class="mb-4">
         <ng-template pTemplate="left">
-            <button pButton pRipple label="Xuất báo cáo" icon="pi pi-file" class="p-button-success mr-2"
-                (click)="exportReport1()"></button>
+            <button pButton pRipple label="Làm mới" icon="pi pi-refresh" 
+                    class="p-button-outlined" (click)="loadData()"></button>
         </ng-template>
         <ng-template pTemplate="right">
-  <div class="flex align-items-center gap-3">
+            <div class="flex align-items-center gap-3">
+                <!-- Tìm kiếm -->
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input type="text" pInputText placeholder="Tìm sản phẩm..." 
+                           [(ngModel)]="keyword" (input)="filterProducts()" />
+                </span>
 
-    <!-- Ô tìm kiếm -->
-    <span class="p-input-icon-left">
-      <i class="pi pi-search"></i>
-      <input type="text" pInputText placeholder="Tìm kiếm..." [(ngModel)]="keyword" />
-    </span>
+                <!-- Lọc theo danh mục -->
+                <p-dropdown [options]="categories" [(ngModel)]="selectedCategory" 
+                            optionLabel="name" placeholder="Danh mục" 
+                            (onChange)="filterProducts()" [showClear]="true">
+                </p-dropdown>
 
-    <!-- Chọn tháng -->
-    <p-dropdown 
-      [options]="months" 
-      [(ngModel)]="selectedMonth" 
-      optionLabel="label" 
-      placeholder="Tháng">
-    </p-dropdown>
-
-    <!-- Chọn năm -->
-    <p-dropdown 
-      [options]="years" 
-      [(ngModel)]="selectedYear" 
-      placeholder="Năm">
-    </p-dropdown>
-
-  </div>
-</ng-template>
-
+                <!-- Lọc theo trạng thái -->
+                <p-dropdown [options]="stockStatuses" [(ngModel)]="selectedStatus" 
+                            optionLabel="label" optionValue="value" 
+                            placeholder="Trạng thái" (onChange)="filterProducts()" 
+                            [showClear]="true">
+                </p-dropdown>
+            </div>
+        </ng-template>
     </p-toolbar>
 
-    <p-table [value]="listReport" [rows]="5" [paginator]="true">
+    <!-- Products Table -->
+    <p-table [value]="filteredProducts" [rows]="10" [paginator]="true" 
+             [rowsPerPageOptions]="[5,10,20,50]" [showCurrentPageReport]="true"
+             currentPageReportTemplate="Hiển thị {first} đến {last} trong tổng số {totalRecords} sản phẩm"
+             responsiveLayout="scroll">
+        
         <ng-template pTemplate="header">
             <tr>
-                <th>Tháng</th>
-                <th>Năm</th>
-                <th>Tổng đơn hàng</th>
-                <th>Tổng doanh thu</th>
+                <th pSortableColumn="id">
+                    Mã SP <p-sortIcon field="id"></p-sortIcon>
+                </th>
+                <th>Ảnh</th>
+                <th pSortableColumn="name">
+                    Tên sản phẩm <p-sortIcon field="name"></p-sortIcon>
+                </th>
+                <th pSortableColumn="categoryName">
+                    Danh mục <p-sortIcon field="categoryName"></p-sortIcon>
+                </th>
+                <th pSortableColumn="price">
+                    Giá bán <p-sortIcon field="price"></p-sortIcon>
+                </th>
+                <th pSortableColumn="quantity">
+                    Tồn kho <p-sortIcon field="quantity"></p-sortIcon>
+                </th>
+                <th>Trạng thái</th>
                 <th>Hành động</th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-report>
-            <tr>
-                <td>{{report.month}}</td>
-                <td>{{report.year}}</td>
-                <td>{{report.totalOrders}}</td>
-                <td>{{report.totalRevenue | currency:'VND':'symbol':'1.0-0':'vi-VN'}}</td>
+
+        <ng-template pTemplate="body" let-product>
+            <tr [ngClass]="getRowClass(product.quantity)">
+                <td>#{{product.id}}</td>
                 <td>
-                    <button pButton type="button" icon="pi pi-file-excel" (click)="exportReport('excel')"
-                        class="p-button-rounded p-button-success mr-2" tooltip="Xuất Excel"></button>
-                    <button pButton type="button" icon="pi pi-file-pdf" (click)="exportReport('pdf')"
-                        class="p-button-rounded p-button-danger" tooltip="Xuất PDF"></button>
+                    <img src="{{'data:image/jpg;base64,' +product.image}}" [alt]="product.name" width="100"
+                        class="shadow-4" />
+                </td>
+                <td>
+                    <strong>{{product.name}}</strong>
+                </td>
+                <td>
+                    <span class="badge badge-info">{{product.category}}</span>
+                </td>
+                <td>
+                    <strong>{{product.price | currency:'VND':'symbol':'1.0-0':'vi'}}</strong>
+                </td>
+                <td>
+                    <div class="quantity-badge" [ngClass]="getStockClass(product.quantity)">
+                        <i [class]="getStockIcon(product.quantity)"></i>
+                        <span>{{product.quantity}} sản phẩm</span>
+                    </div>
+                </td>
+                <td>
+                    <span class="stock-status">{{ getStockStatus(product.quantity) }}</span>
+                </td>
+                <td>
+                    <button pButton pRipple icon="pi pi-pencil" 
+                            class="p-button-rounded p-button-warning mr-2" 
+                            pTooltip="Cập nhật tồn kho" 
+                            (click)="updateStock(product)"></button>
+                    <!-- <button pButton pRipple icon="pi pi-eye" 
+                            class="p-button-rounded p-button-info" 
+                            pTooltip="Chi tiết" 
+                            (click)="viewDetails(product)"></button> -->
+                </td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="8" class="text-center">
+                    <div class="empty-state">
+                        <i class="pi pi-inbox" style="font-size: 3rem; color: #ccc;"></i>
+                        <p>Không tìm thấy sản phẩm nào</p>
+                    </div>
                 </td>
             </tr>
         </ng-template>
     </p-table>
 </div>
 
-<!-- Biểu đồ-->
+<!-- Biểu đồ tồn kho -->
 <div class="card mt-4 p-4">
-    <h5>Biểu đồ doanh thu theo tháng</h5>
-    <!-- <p-chart type="line" [data]="chartData" [options]="chartOptions"></p-chart> -->
+    <div class="chart-header mb-3">
+        <h5>
+            <i class="pi pi-chart-pie"></i>
+            Biểu đồ phân bố tồn kho
+        </h5>
+        <p class="text-muted">Thống kê trạng thái tồn kho theo danh mục</p>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="chart-container">
+                <h6 class="text-center mb-3">Phân bố trạng thái tồn kho</h6>
+                <canvas baseChart
+                        [data]="doughnutChartData"
+                        [options]="doughnutChartOptions"
+                        type="doughnut">
+                </canvas>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="chart-container">
+                <h6 class="text-center mb-3">Tồn kho theo danh mục</h6>
+                <canvas baseChart
+                        [data]="barChartData"
+                        [options]="barChartOptions"
+                        type="bar">
+                </canvas>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Update Stock Dialog -->
+<p-dialog [(visible)]="displayUpdateDialog" [style]="{width: '500px'}" 
+          header="Cập nhật tồn kho" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="field">
+            <label>Sản phẩm</label>
+            <input type="text" pInputText [value]="selectedProduct?.name" [disabled]="true" />
+        </div>
+        <div class="field">
+            <label>Tồn kho hiện tại</label>
+            <input type="number" pInputText [value]="selectedProduct?.quantity" [disabled]="true" />
+        </div>
+        <div class="field">
+            <label>Số lượng thêm/giảm <span class="text-danger">*</span></label>
+            <p-inputNumber [(ngModel)]="quantityChange" [showButtons]="true" 
+                          [min]="-selectedProduct?.quantity" placeholder="Nhập số lượng">
+            </p-inputNumber>
+            <small class="text-muted">Số dương để thêm, số âm để giảm</small>
+        </div>
+        <div class="field">
+            <label>Ghi chú</label>
+            <textarea pInputTextarea [(ngModel)]="updateNote" rows="3" 
+                     placeholder="Lý do cập nhật tồn kho..."></textarea>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Hủy" icon="pi pi-times" 
+                class="p-button-text" (click)="displayUpdateDialog=false"></button>
+        <button pButton pRipple label="Cập nhật" icon="pi pi-check" 
+                class="p-button-primary" (click)="confirmUpdateStock()"></button>
+    </ng-template>
+</p-dialog>
 

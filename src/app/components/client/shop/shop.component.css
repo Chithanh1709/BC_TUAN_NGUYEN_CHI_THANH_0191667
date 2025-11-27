@@ -253,6 +253,99 @@
   color: #7fad39;
 }
 
+/* Price Checkbox Group */
+.price-checkbox-group {
+  padding: 10px 0;
+}
+
+.price-checkbox-item {
+  margin-bottom: 12px;
+}
+
+.custom-checkbox {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  padding-left: 35px;
+  font-size: 15px;
+  color: #6f6f6f;
+  transition: all 0.3s;
+}
+
+.custom-checkbox:hover {
+  color: #7fad39;
+}
+
+.custom-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.custom-checkbox .checkmark {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 22px;
+  width: 22px;
+  background-color: white;
+  border: 2px solid #e1e1e1;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.custom-checkbox:hover .checkmark {
+  border-color: #7fad39;
+}
+
+.custom-checkbox input:checked ~ .checkmark {
+  background-color: #7fad39;
+  border-color: #7fad39;
+}
+
+.custom-checkbox .checkmark::after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 7px;
+  top: 3px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.custom-checkbox input:checked ~ .checkmark::after {
+  display: block;
+}
+
+.custom-checkbox .label-text {
+  line-height: 1.5;
+}
+
+/* Animation khi check */
+@keyframes checkboxPop {
+  0% {
+    transform: translateY(-50%) scale(1);
+  }
+  50% {
+    transform: translateY(-50%) scale(1.1);
+  }
+  100% {
+    transform: translateY(-50%) scale(1);
+  }
+}
+
+.custom-checkbox input:checked ~ .checkmark {
+  animation: checkboxPop 0.3s ease;
+}
+
 /* Custom Styles */
 :host ::ng-deep .p-slider .p-slider-range, :host ::ng-deep  .p-slider .p-slider-handle {
     background-color: #dd2222;

@@ -198,6 +198,79 @@
   margin: 0;
 }
 
+/* Product Content Formatting */
+.product__details__tab__desc {
+  padding: 20px 0;
+}
+
+.product__details__tab__desc h4 {
+  color: #1c1c1c;
+  font-weight: 700;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #7fad39;
+}
+
+.product-content {
+  line-height: 1.8;
+  color: #6f6f6f;
+  font-size: 15px;
+}
+
+.product-content strong {
+  color: #1c1c1c;
+  font-weight: 600;
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 8px;
+}
+
+.product-content br {
+  display: block;
+  margin-bottom: 8px;
+  content: "";
+}
+
+/* Styling cho các bullet points */
+.product-content strong::before {
+  content: '';
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Đoạn văn */
+.product-content p {
+  margin-bottom: 15px;
+  text-align: justify;
+}
+
+/* List items với indentation */
+.product-content [style*="margin-left"] {
+  padding-left: 20px;
+  position: relative;
+}
+
+/* Custom bullets */
+.product-content ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.product-content ul li {
+  padding-left: 25px;
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.product-content ul li::before {
+  content: '•';
+  color: #7fad39;
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+  font-size: 18px;
+}
+
 /* Responsive */
 @media (max-width: 991px) {
   .related-product .featured__item__pic {

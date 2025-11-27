@@ -27,6 +27,18 @@ export class SearchComponent implements OnInit {
   listCategory :any;
   rangeValues = [0,100];
 
+  // Thêm biến cho checkbox price ranges
+  priceRanges = [
+    { label: 'Giá dưới 100.000đ', min: 0, max: 100000, checked: false },
+    { label: '100.000đ - 200.000đ', min: 100000, max: 200000, checked: false },
+    { label: '200.000đ - 300.000đ', min: 200000, max: 300000, checked: false },
+    { label: '300.000đ - 500.000đ', min: 300000, max: 500000, checked: false },
+    { label: '500.000đ - 1.000.000đ', min: 500000, max: 1000000, checked: false },
+    { label: 'Giá trên 1.000.000đ', min: 1000000, max: 999999999, checked: false }
+  ];
+
+  allProducts: any[] = []; // Lưu toàn bộ sản phẩm tìm kiếm ban đầu
+
   constructor(
     private router: Router,
     private categoryService:CategoryService,
@@ -49,6 +61,7 @@ export class SearchComponent implements OnInit {
     this.productService.searchProduct(this.keyword).subscribe({
       next:res =>{
         this.listProduct = res;
+        this.allProducts = [...res]; // Thêm dòng này để backup
         console.log(this.listProduct);
       },error: err =>{
         console.log(err);
@@ -76,6 +89,22 @@ export class SearchComponent implements OnInit {
     })
   }
 
+  // Thêm method mới cho checkbox
+  onPriceRangeChange(): void {
+    const checkedRanges = this.priceRanges.filter(range => range.checked);
+
+    if (checkedRanges.length === 0) {
+      // Nếu không có range nào được chọn, hiển thị tất cả kết quả tìm kiếm
+      this.listProduct = [...this.allProducts];
+    } else {
+      // Lọc sản phẩm theo các range đã chọn
+      this.listProduct = this.allProducts.filter(product => {
+        return checkedRanges.some(range => 
+          product.price >= range.min && product.price <= range.max
+        );
+      });
+    }
+  }
 
   addToCart(item: any){
     this.cartService.getItems();

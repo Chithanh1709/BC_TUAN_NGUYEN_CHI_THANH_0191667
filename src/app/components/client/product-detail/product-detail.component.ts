@@ -154,4 +154,16 @@ export class ProductDetailComponent implements OnInit {
   showWarn(text: string) {
     this.messageService.add({ severity: 'warn', summary: 'Warn', detail: text });
   }
+
+  // Thêm method để format nội dung với xuống dòng
+  formatContent(content: string): string {
+    if (!content) return '';
+    
+    // Thay thế các dấu xuống dòng bằng <br>
+    return content
+      .replace(/\n/g, '<br>')
+      .replace(/\* /g, '<br><strong>• </strong>')
+      .replace(/- /g, '<br>&nbsp;&nbsp;- ')
+      .replace(/:/g, ':<br>');
+  }
 }
