@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +14,8 @@ import com.example.ogani.exception.NotFoundException;
 import com.example.ogani.dtos.request.CreateCategoryRequest;
 import com.example.ogani.repository.CategoryRepository;
 
-
 @Service
-public class CategoryService  {
+public class CategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -28,7 +28,7 @@ public class CategoryService  {
     public Category createCategory(CreateCategoryRequest request) {
         Category category = new Category();
         // kiểm tra trùng
-        if(categoryRepository.existsByName(request.getName())){
+        if (categoryRepository.existsByName(request.getName())) {
             throw new NotFoundException("Category name is already in use!");
         }
         category.setName(request.getName());
@@ -38,25 +38,27 @@ public class CategoryService  {
     }
 
     public Category updateCategory(long id, CreateCategoryRequest request) {
-        Category category = categoryRepository.findById(id).orElseThrow(() -> new NotFoundException("Not Found Category With Id: " + id));
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Not Found Category With Id: " + id));
         category.setName(request.getName());
         categoryRepository.save(category);
         return category;
     }
 
     public void enableCategory(long id) {
-        Category category = categoryRepository.findById(id).orElseThrow(() -> new NotFoundException("Not Found Category With Id: " + id));
-        if(category.isEnable()){
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Not Found Category With Id: " + id));
+        if (category.isEnable()) {
             category.setEnable(false);
-        } else{
+        } else {
             category.setEnable(true);
         }
         categoryRepository.save(category);
     }
 
-public ResponseEntity<?> deleteCategory(long id) {
-        Category category = categoryRepository.findByIdAndEnable(id,true).orElse(null);
-        if(category == null){
+    public ResponseEntity<?> deleteCategory(long id) {
+        Category category = categoryRepository.findByIdAndEnable(id, true).orElse(null);
+        if (category == null) {
             return ResponseEntity.badRequest().body(Map.of("message", "Không tìm thấy danh mục với id: " + id));
         }
 
@@ -65,9 +67,23 @@ public ResponseEntity<?> deleteCategory(long id) {
         return ResponseEntity.ok(Map.of("message", "Xóa danh mục thành công!"));
     }
 
+    public ResponseEntity<?> deleteCategoryEntity(long id) {
+
+        boolean exists = categoryRepository.existsById(id);
+        if (!exists) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "Không tìm thấy danh mục với id: " + id));
+        }
+
+        categoryRepository.deleteById(id);
+
+        return ResponseEntity.ok(Map.of("message", "Xóa danh mục thành công!"));
+    }
+
     public List<Category> getListEnabled() {
         List<Category> list = categoryRepository.findALLByEnabled();
         return list;
     }
-    
+
 }

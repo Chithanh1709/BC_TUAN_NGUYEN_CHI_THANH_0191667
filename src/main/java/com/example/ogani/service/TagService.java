@@ -58,14 +58,24 @@ public class TagService {
     }
 
     public ResponseEntity<?> updateTag(long id, CreateTagRequest request) {
-
-        Tag tag = tagRepository.findById(id).orElseThrow(() -> new NotFoundException("Not Foud Tag"));
-        tag = tagRepository.findByName(request.getName());
-        if (tag != null && tag.getId() != id && tag.isEnable()) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Tag is already"));
+        // ✅ Tìm tag cần update
+        Tag tag = tagRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("Not Found Tag"));
+        
+        // ✅ KIỂM TRA TRÙNG TÊN - DÙNG BIẾN KHÁC, KHÔNG GHI ĐÈ `tag`
+        Tag existingTag = tagRepository.findByName(request.getName());
+        
+        // Nếu tìm thấy tag khác có cùng tên (không phải chính nó)
+        if (existingTag != null && existingTag.getId() != id && existingTag.isEnable()) {
+            return ResponseEntity.badRequest().body(
+                Map.of("message", "Tag '" + request.getName() + "' đã tồn tại!")
+            );
         }
+        
+        // ✅ CẬP NHẬT - `tag` VẪN LÀ OBJECT GỐC, KHÔNG BỊ NULL
         tag.setName(request.getName());
         tagRepository.save(tag);
+        
         return ResponseEntity.ok(Map.of("message", "Update tag success"));
     }
 

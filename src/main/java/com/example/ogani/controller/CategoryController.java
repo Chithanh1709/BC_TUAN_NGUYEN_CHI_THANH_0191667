@@ -73,4 +73,11 @@ public class CategoryController {
         
     }
 
+    @DeleteMapping("/delete/{id}")
+    @Operation(summary = "Xóa danh mục bằng id")
+    public ResponseEntity<?> deleteEntity(@PathVariable long id) {
+        return categoryService.deleteCategoryEntity(id);
+        
+    }
+
 }
