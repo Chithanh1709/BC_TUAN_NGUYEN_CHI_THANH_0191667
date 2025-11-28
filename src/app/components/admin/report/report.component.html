@@ -180,7 +180,7 @@
     </div>
     <div class="row">
         <div class="col-md-6">
-            <div class="chart-container">
+            <div class="chart-container" style="max-width: 400px; margin: 0 auto;">
                 <h6 class="text-center mb-3">Phân bố trạng thái tồn kho</h6>
                 <canvas baseChart
                         [data]="doughnutChartData"
@@ -190,8 +190,8 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="chart-container">
-                <h6 class="text-center mb-3">Tồn kho theo danh mục</h6>
+            <div class="chart-container" style="max-width: 800px; margin: 0 auto;">
+                <h6 class="text-center mb-3">Top 10 sản phẩm tồn kho nhiều nhất</h6>
                 <canvas baseChart
                         [data]="barChartData"
                         [options]="barChartOptions"

@@ -85,8 +85,8 @@
 
 /* Chat Window */
 .chat-window {
-  width: 400px;
-  height: 600px;
+  width: 450px;
+  height: 650px;
   background: white;
   border-radius: 16px;
   box-shadow: 0 10px 40px rgba(127, 173, 57, 0.3);
@@ -533,9 +533,9 @@
   }
 
   .chat-window {
-    width: calc(100vw - 20px);
-    height: calc(100vh - 20px);
-    max-width: 100%;
+    width: 100vw;
+    height: 90vh;
+    max-width: 450px;
     border-radius: 12px;
   }
 

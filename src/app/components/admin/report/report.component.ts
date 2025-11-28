@@ -85,48 +85,8 @@ export class ReportComponent implements OnInit {
   };
 
   // Charts - Bar
-  public barChartData: ChartData<'bar'> = {
-    labels: [],
-    datasets: [{
-      label: 'Tổng tồn kho',
-      data: [],
-      backgroundColor: '#7fad39',
-      hoverBackgroundColor: '#6a9630',
-      borderRadius: 5
-    }]
-  };
-
-  public barChartOptions: ChartConfiguration<'bar'>['options'] = {
-    responsive: true,
-    maintainAspectRatio: true,
-    indexAxis: 'y',
-    plugins: {
-      legend: {
-        display: true,
-        position: 'bottom'
-      },
-      tooltip: {
-        callbacks: {
-          label: (context) => {
-            return `${context.dataset.label}: ${context.parsed.x} sản phẩm`;
-          }
-        }
-      }
-    },
-    scales: {
-      x: {
-        beginAtZero: true,
-        grid: {
-          display: true
-        }
-      },
-      y: {
-        grid: {
-          display: false
-        }
-      }
-    }
-  };
+  barChartData: any;
+  barChartOptions: any;
 
   constructor(
     private productService: ProductService,
@@ -138,7 +98,7 @@ export class ReportComponent implements OnInit {
     this.loadData();
   }
 
-  loadData(): void {
+  loadData() {
     // Load products
     this.productService.getListProduct().subscribe({
       next: (products) => {
@@ -329,30 +289,64 @@ export class ReportComponent implements OnInit {
     console.log('View product details:', product);
   }
 
-  updateCharts(): void {
-    // Update Doughnut chart
+  updateCharts() {
+    // Doughnut Chart - Phân bố trạng thái
     this.doughnutChartData = {
       labels: ['Hết hàng', 'Sắp hết', 'Còn hàng'],
       datasets: [{
         data: [this.outOfStockCount, this.lowStockCount, this.inStockCount],
         backgroundColor: ['#ef4444', '#f59e0b', '#10b981'],
-        hoverBackgroundColor: ['#dc2626', '#d97706', '#059669'],
-        borderWidth: 2,
-        borderColor: '#fff'
       }]
     };
 
-    // Update Bar chart - By category
-    const categoryStats = this.getCategoryStatistics();
+    this.doughnutChartOptions = {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: {
+          position: 'bottom'
+        }
+      }
+    };
+
+    // Bar Chart - Tồn kho theo sản phẩm
+    const topProducts = this.allProducts
+      .sort((a, b) => b.quantity - a.quantity)
+      .slice(0, 10); // Lấy top 10 sản phẩm có tồn kho cao nhất
+
     this.barChartData = {
-      labels: categoryStats.map(c => c.name),
+      labels: topProducts.map(p => p.name.length > 20 ? p.name.substring(0, 20) + '...' : p.name),
       datasets: [{
-        label: 'Tổng tồn kho',
-        data: categoryStats.map(c => c.total),
-        backgroundColor: '#7fad39',
-        hoverBackgroundColor: '#6a9630',
-        borderRadius: 5
+        label: 'Số lượng tồn kho',
+        data: topProducts.map(p => p.quantity),
+        backgroundColor: '#10b981',
+        borderColor: '#059669',
+        borderWidth: 1
       }]
+    };
+
+    this.barChartOptions = {
+      responsive: true,
+      maintainAspectRatio: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 10
+          }
+        },
+        x: {
+          ticks: {
+            maxRotation: 45,
+            minRotation: 45
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          display: false
+        }
+      }
     };
   }
 

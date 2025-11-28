@@ -67,6 +67,7 @@ export class ProductComponent implements OnInit {
     { label: 'Túi', value: 'TÚI' },
     { label: 'Gói', value: 'GÓI' },
     { label: 'Thùng', value: 'THÙNG' },
+    {label: 'Lốc', value:'Lốc'}
 
     // --- Khác ---
     // { label: 'Set/Bộ', value: 'SET' },

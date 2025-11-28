@@ -86,7 +86,7 @@ ngOnInit(): void {
 
 
 getListProduct(){
-  this.productSerive.getListProductNewest(8).subscribe({
+  this.productSerive.getListProductNewest(12).subscribe({
     next: res =>{
       this.listProductNewest = res;
     },error: err =>{
